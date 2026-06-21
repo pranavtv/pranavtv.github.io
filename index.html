@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Pranav T V – Researcher in Statistics, specializing in Mixture Models, Bayesian Statistics, Neural Networks, and Machine Learning." />
-  <meta name="keywords" content="Statistics, Mixture Models, Bayesian Statistics, Neural Networks, Machine Learning, Neutrosophic Statistics" />
+  <meta name="description" content="Pranav T V – Researcher in Statistics and Applied Mathematics, M.Sc from Central University of Tamil Nadu. Specializing in Mixture Models, Bayesian Statistics, Neural Networks, Machine Learning and Neutrosophic Statistics." />
+  <meta name="keywords" content="Pranav T V, Statistics, Mixture Models, Bayesian Statistics, Neural Networks, Machine Learning, Neutrosophic Statistics, Data Science, R Programming, Python" />
   <meta name="author" content="Pranav T V" />
   <title>Pranav T V | Researcher in Statistics</title>
  
@@ -18,18 +18,18 @@
        DESIGN TOKENS
     ============================================= */
     :root {
-      --ink:        #0f1117;       /* near-black for headings */
-      --ink-mid:    #2d3142;       /* body text */
-      --ink-soft:   #5a607a;       /* secondary text */
-      --ink-muted:  #9299b0;       /* captions, meta */
-      --surface:    #f6f7fb;       /* page background */
-      --card:       #ffffff;       /* card bg */
-      --border:     #e2e5f0;       /* borders */
-      --accent:     #1a56a0;       /* primary blue */
-      --accent-alt: #2e7dc5;       /* hover blue */
-      --gold:       #c8922a;       /* warm accent for highlights */
-      --gold-light: #f5e8cc;       /* gold tint */
-      --tag-bg:     #eaf0fb;       /* tag pills */
+      --ink:        #0f1117;
+      --ink-mid:    #2d3142;
+      --ink-soft:   #5a607a;
+      --ink-muted:  #9299b0;
+      --surface:    #f6f7fb;
+      --card:       #ffffff;
+      --border:     #e2e5f0;
+      --accent:     #1a56a0;
+      --accent-alt: #2e7dc5;
+      --gold:       #c8922a;
+      --gold-light: #f5e8cc;
+      --tag-bg:     #eaf0fb;
       --tag-text:   #1a56a0;
  
       --font-display: 'Playfair Display', Georgia, serif;
@@ -50,9 +50,7 @@
        RESET & BASE
     ============================================= */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
     html { scroll-behavior: smooth; font-size: 16px; }
- 
     body {
       font-family: var(--font-body);
       background: var(--surface);
@@ -60,14 +58,13 @@
       line-height: 1.7;
       -webkit-font-smoothing: antialiased;
     }
- 
     img { display: block; max-width: 100%; }
     a { color: inherit; text-decoration: none; }
     ul { list-style: none; }
     button { cursor: pointer; border: none; background: none; font-family: inherit; }
  
     /* =============================================
-       TYPOGRAPHY SCALE
+       TYPOGRAPHY
     ============================================= */
     h1, h2, h3, h4 { font-family: var(--font-display); color: var(--ink); line-height: 1.25; }
     h1 { font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 700; }
@@ -76,7 +73,7 @@
     p  { color: var(--ink-mid); }
  
     /* =============================================
-       LAYOUT UTILITY
+       LAYOUT
     ============================================= */
     .container { width: 90%; max-width: 1140px; margin: 0 auto; }
     .section { padding: 100px 0; }
@@ -106,44 +103,29 @@
       z-index: 1000;
       transition: border-color var(--transition), box-shadow var(--transition);
     }
-    #navbar.scrolled {
-      border-color: var(--border);
-      box-shadow: var(--shadow-sm);
-    }
+    #navbar.scrolled { border-color: var(--border); box-shadow: var(--shadow-sm); }
     .nav-inner {
       display: flex; align-items: center; justify-content: space-between;
       width: 90%; max-width: 1140px; margin: 0 auto;
     }
     .nav-logo {
       font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--ink);
-      letter-spacing: -.02em;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--ink); letter-spacing: -.02em;
     }
     .nav-logo span { color: var(--accent); }
-    .nav-links {
-      display: flex; gap: .25rem;
-    }
+    .nav-links { display: flex; gap: .25rem; }
     .nav-links a {
-      font-size: .82rem;
-      font-weight: 500;
-      letter-spacing: .03em;
-      color: var(--ink-soft);
+      font-size: .82rem; font-weight: 500;
+      letter-spacing: .03em; color: var(--ink-soft);
       padding: .45rem .75rem;
       border-radius: var(--radius-sm);
       transition: color var(--transition), background var(--transition);
     }
-    .nav-links a:hover,
-    .nav-links a.active {
-      color: var(--accent);
-      background: var(--tag-bg);
-    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); background: var(--tag-bg); }
     .nav-hamburger {
-      display: none;
-      flex-direction: column; gap: 5px;
-      padding: 6px;
-      border-radius: var(--radius-sm);
+      display: none; flex-direction: column; gap: 5px;
+      padding: 6px; border-radius: var(--radius-sm);
     }
     .nav-hamburger span {
       display: block; width: 22px; height: 2px;
@@ -153,18 +135,12 @@
     .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .nav-hamburger.open span:nth-child(2) { opacity: 0; }
     .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
- 
-    /* Mobile nav drawer */
     .nav-drawer {
-      display: none;
-      flex-direction: column;
+      display: none; flex-direction: column;
       position: fixed; top: var(--nav-h); left: 0; right: 0;
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 5%;
-      gap: .25rem;
-      z-index: 999;
-      box-shadow: var(--shadow);
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: 1rem 5%; gap: .25rem;
+      z-index: 999; box-shadow: var(--shadow);
     }
     .nav-drawer.open { display: flex; }
     .nav-drawer a {
@@ -176,16 +152,14 @@
     .nav-drawer a:hover { background: var(--tag-bg); color: var(--accent); }
  
     /* =============================================
-       HERO / HOME
+       HERO
     ============================================= */
     #home {
       min-height: 100vh;
       display: flex; align-items: center;
       padding-top: var(--nav-h);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
-    /* Subtle grid texture */
     #home::before {
       content: '';
       position: absolute; inset: 0;
@@ -193,13 +167,11 @@
         linear-gradient(var(--border) 1px, transparent 1px),
         linear-gradient(90deg, var(--border) 1px, transparent 1px);
       background-size: 48px 48px;
-      opacity: .45;
-      pointer-events: none;
+      opacity: .45; pointer-events: none;
     }
     #home::after {
       content: '';
-      position: absolute;
-      bottom: -120px; right: -120px;
+      position: absolute; bottom: -120px; right: -120px;
       width: 500px; height: 500px;
       background: radial-gradient(circle, #dce8f8 0%, transparent 70%);
       pointer-events: none;
@@ -207,119 +179,77 @@
     .hero-inner {
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 4rem;
-      align-items: center;
+      gap: 4rem; align-items: center;
       position: relative; z-index: 1;
     }
     .hero-eyebrow {
       display: inline-flex; align-items: center; gap: .5rem;
-      background: var(--gold-light);
-      color: var(--gold);
-      font-family: var(--font-mono);
-      font-size: .75rem;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-      padding: .35rem .85rem;
-      border-radius: 999px;
+      background: var(--gold-light); color: var(--gold);
+      font-family: var(--font-mono); font-size: .75rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .35rem .85rem; border-radius: 999px;
       margin-bottom: 1.4rem;
     }
     .hero-eyebrow::before {
-      content: '';
-      width: 6px; height: 6px;
-      background: var(--gold);
-      border-radius: 50%;
+      content: ''; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
     }
     .hero-name { margin-bottom: .6rem; }
     .hero-role {
       font-family: var(--font-display);
       font-size: clamp(1rem, 2vw, 1.25rem);
-      font-weight: 400;
-      color: var(--accent);
-      font-style: italic;
-      margin-bottom: 1.4rem;
+      font-weight: 400; color: var(--accent);
+      font-style: italic; margin-bottom: 1.4rem;
     }
     .hero-bio {
-      font-size: 1.05rem;
-      color: var(--ink-soft);
-      max-width: 540px;
-      margin-bottom: 2.2rem;
-      line-height: 1.8;
+      font-size: 1.05rem; color: var(--ink-soft);
+      max-width: 540px; margin-bottom: 2.2rem; line-height: 1.8;
     }
     .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
     .btn {
       display: inline-flex; align-items: center; gap: .5rem;
-      padding: .75rem 1.6rem;
-      border-radius: var(--radius-sm);
-      font-size: .9rem;
-      font-weight: 600;
-      letter-spacing: .02em;
+      padding: .75rem 1.6rem; border-radius: var(--radius-sm);
+      font-size: .9rem; font-weight: 600; letter-spacing: .02em;
       transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
     }
     .btn-primary {
-      background: var(--accent);
-      color: #fff;
+      background: var(--accent); color: #fff;
       box-shadow: 0 4px 14px rgba(26,86,160,.35);
     }
     .btn-primary:hover { background: var(--accent-alt); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,86,160,.4); }
-    .btn-outline {
-      background: transparent;
-      color: var(--accent);
-      border: 1.5px solid var(--accent);
-    }
+    .btn-outline { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
     .btn-outline:hover { background: var(--tag-bg); transform: translateY(-2px); }
- 
-    .hero-stats {
-      display: flex; gap: 2.5rem; margin-top: 2.8rem;
-    }
+    .hero-stats { display: flex; gap: 2.5rem; margin-top: 2.8rem; }
     .hero-stat-num {
-      font-family: var(--font-display);
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1;
+      font-family: var(--font-display); font-size: 2rem;
+      font-weight: 700; color: var(--ink); line-height: 1;
     }
     .hero-stat-label {
-      font-size: .78rem;
-      color: var(--ink-muted);
-      font-family: var(--font-mono);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-top: .25rem;
+      font-size: .78rem; color: var(--ink-muted);
+      font-family: var(--font-mono); letter-spacing: .06em;
+      text-transform: uppercase; margin-top: .25rem;
     }
- 
-    /* Avatar block */
     .hero-avatar-wrap { position: relative; }
     .hero-avatar {
-      width: 260px; height: 260px;
-      border-radius: 50%;
+      width: 260px; height: 260px; border-radius: 50%;
       background: linear-gradient(135deg, var(--accent) 0%, #5399d8 100%);
       display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display);
-      font-size: 4.5rem;
-      font-weight: 700;
-      color: #fff;
-      box-shadow: var(--shadow-lg);
-      position: relative; z-index: 1;
+      font-family: var(--font-display); font-size: 4.5rem;
+      font-weight: 700; color: #fff;
+      box-shadow: var(--shadow-lg); position: relative; z-index: 1;
     }
     .hero-avatar-ring {
-      position: absolute; inset: -12px;
-      border-radius: 50%;
+      position: absolute; inset: -12px; border-radius: 50%;
       border: 2px dashed var(--border);
       animation: spin-ring 24s linear infinite;
     }
     @keyframes spin-ring { to { transform: rotate(360deg); } }
     .hero-badge {
       position: absolute; bottom: 10px; right: -10px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: .6rem .9rem;
-      box-shadow: var(--shadow);
-      display: flex; align-items: center; gap: .5rem;
-      font-size: .78rem;
-      font-weight: 600;
-      color: var(--ink);
-      white-space: nowrap;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: .6rem .9rem;
+      box-shadow: var(--shadow); display: flex; align-items: center; gap: .5rem;
+      font-size: .78rem; font-weight: 600; color: var(--ink); white-space: nowrap;
     }
     .hero-badge .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
  
@@ -327,31 +257,39 @@
        ABOUT
     ============================================= */
     #about { background: var(--card); }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-    }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
     .about-bio { font-size: .97rem; color: var(--ink-soft); line-height: 1.85; }
     .about-bio p + p { margin-top: 1rem; }
- 
-    .about-cards { display: flex; flex-direction: column; gap: 1.2rem; }
-    .about-card {
+    .personal-details {
+      margin-top: 1.6rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 1.2rem 1.4rem;
+    }
+    .personal-details h4 {
+      font-size: .82rem; font-family: var(--font-mono);
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: .9rem;
+    }
+    .detail-row {
+      display: flex; gap: .75rem; align-items: baseline;
+      font-size: .85rem; padding: .3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .detail-row:last-child { border: none; }
+    .detail-label { color: var(--ink-muted); min-width: 100px; font-size: .78rem; font-family: var(--font-mono); }
+    .detail-val { color: var(--ink-mid); }
+    .about-cards { display: flex; flex-direction: column; gap: 1.2rem; }
+    .about-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.2rem 1.4rem;
       transition: box-shadow var(--transition);
     }
     .about-card:hover { box-shadow: var(--shadow); }
-    .about-card-head {
-      display: flex; align-items: center; gap: .75rem;
-      margin-bottom: .5rem;
-    }
+    .about-card-head { display: flex; align-items: center; gap: .75rem; margin-bottom: .5rem; }
     .about-card-icon {
-      width: 36px; height: 36px;
-      background: var(--tag-bg);
+      width: 36px; height: 36px; background: var(--tag-bg);
       border-radius: var(--radius-sm);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.1rem; flex-shrink: 0;
@@ -359,17 +297,11 @@
     .about-card-title { font-size: .9rem; font-weight: 600; color: var(--ink); }
     .about-card-sub  { font-size: .82rem; color: var(--ink-muted); }
     .about-card-body { font-size: .83rem; color: var(--ink-soft); line-height: 1.6; }
- 
-    .skills-grid {
-      display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem;
-    }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; }
     .skill-pill {
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      font-size: .77rem;
-      font-weight: 500;
-      padding: .3rem .85rem;
-      border-radius: 999px;
+      background: var(--tag-bg); color: var(--tag-text);
+      font-size: .77rem; font-weight: 500;
+      padding: .3rem .85rem; border-radius: 999px;
       border: 1px solid #c5d8f5;
     }
  
@@ -377,32 +309,22 @@
        RESEARCH
     ============================================= */
     #research { background: var(--surface); }
-    .research-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
+    .research-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
     .research-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.8rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.8rem;
       transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .research-card::after {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
       background: linear-gradient(90deg, var(--accent), var(--gold));
       transform: scaleX(0); transform-origin: left;
       transition: transform var(--transition);
     }
     .research-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
     .research-card:hover::after { transform: scaleX(1); }
-    .research-icon {
-      font-size: 2.2rem; margin-bottom: 1.1rem;
-    }
+    .research-icon { font-size: 2.2rem; margin-bottom: 1.1rem; }
     .research-card h3 { margin-bottom: .6rem; font-size: 1.1rem; }
     .research-card p { font-size: .87rem; color: var(--ink-soft); line-height: 1.7; }
     .research-tags { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
@@ -416,51 +338,32 @@
        PUBLICATIONS
     ============================================= */
     #publications { background: var(--card); }
-    .pub-filters {
-      display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem;
-    }
+    .pub-filters { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 2rem; }
     .pub-filter {
       font-size: .8rem; font-weight: 500;
-      padding: .35rem .9rem;
-      border-radius: 999px;
-      border: 1.5px solid var(--border);
-      color: var(--ink-soft);
+      padding: .35rem .9rem; border-radius: 999px;
+      border: 1.5px solid var(--border); color: var(--ink-soft);
       transition: all var(--transition);
     }
-    .pub-filter.active,
-    .pub-filter:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
+    .pub-filter.active, .pub-filter:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
     .pub-list { display: flex; flex-direction: column; gap: 1.2rem; }
     .pub-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem 1.7rem;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1.2rem;
-      align-items: start;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.5rem 1.7rem;
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 1.2rem; align-items: start;
       transition: box-shadow var(--transition);
     }
     .pub-card:hover { box-shadow: var(--shadow); }
     .pub-year {
-      font-family: var(--font-mono);
-      font-size: .82rem;
-      font-weight: 500;
-      color: var(--ink-muted);
-      padding-top: .2rem;
-      min-width: 42px;
+      font-family: var(--font-mono); font-size: .82rem;
+      font-weight: 500; color: var(--ink-muted);
+      padding-top: .2rem; min-width: 42px;
     }
     .pub-type {
-      display: inline-block;
-      font-size: .7rem; font-weight: 600;
+      display: inline-block; font-size: .7rem; font-weight: 600;
       letter-spacing: .06em; text-transform: uppercase;
-      padding: .18rem .6rem;
-      border-radius: 4px;
-      margin-bottom: .5rem;
+      padding: .18rem .6rem; border-radius: 4px; margin-bottom: .5rem;
     }
     .pub-type.journal  { background: #e0f2fe; color: #0369a1; }
     .pub-type.conf     { background: #ede9fe; color: #6d28d9; }
@@ -475,8 +378,7 @@
     .pub-venue { font-size: .83rem; color: var(--ink-muted); font-style: italic; }
     .pub-links { display: flex; gap: .75rem; margin-top: .75rem; }
     .pub-link {
-      font-size: .78rem; font-weight: 600;
-      color: var(--accent);
+      font-size: .78rem; font-weight: 600; color: var(--accent);
       display: flex; align-items: center; gap: .3rem;
       transition: color var(--transition);
     }
@@ -486,16 +388,10 @@
        PROJECTS
     ============================================= */
     #projects { background: var(--surface); }
-    .project-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.5rem;
-    }
+    .project-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
     .project-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
       transition: transform var(--transition), box-shadow var(--transition);
     }
     .project-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
@@ -504,17 +400,14 @@
       display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
     }
     .project-icon {
-      width: 46px; height: 46px;
-      border-radius: var(--radius-sm);
+      width: 46px; height: 46px; border-radius: var(--radius-sm);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      flex-shrink: 0;
+      font-size: 1.4rem; flex-shrink: 0;
     }
     .project-status {
       font-size: .7rem; font-weight: 600;
       letter-spacing: .06em; text-transform: uppercase;
-      padding: .2rem .65rem;
-      border-radius: 999px;
+      padding: .2rem .65rem; border-radius: 999px;
     }
     .status-active   { background: #dcfce7; color: #15803d; }
     .status-ongoing  { background: #fef9c3; color: #854d0e; }
@@ -524,39 +417,27 @@
     .project-body p { font-size: .86rem; color: var(--ink-soft); line-height: 1.7; }
     .project-tech { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
     .project-tech span {
-      font-family: var(--font-mono);
-      font-size: .7rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: .2rem .55rem;
-      border-radius: 4px;
-      color: var(--ink-soft);
+      font-family: var(--font-mono); font-size: .7rem;
+      background: var(--surface); border: 1px solid var(--border);
+      padding: .2rem .55rem; border-radius: 4px; color: var(--ink-soft);
     }
  
     /* =============================================
        TEACHING
     ============================================= */
     #teaching { background: var(--card); }
-    .teaching-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
+    .teaching-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
     .teaching-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.6rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.6rem;
       transition: box-shadow var(--transition);
     }
     .teaching-card:hover { box-shadow: var(--shadow); }
     .teaching-badge {
       font-size: .7rem; font-weight: 600;
       text-transform: uppercase; letter-spacing: .07em;
-      padding: .22rem .7rem;
-      border-radius: 999px;
-      margin-bottom: 1rem;
-      display: inline-block;
+      padding: .22rem .7rem; border-radius: 999px;
+      margin-bottom: 1rem; display: inline-block;
     }
     .badge-grad  { background: #ede9fe; color: #7c3aed; }
     .badge-under { background: #e0f2fe; color: #0369a1; }
@@ -566,8 +447,7 @@
     .teaching-card p { font-size: .86rem; color: var(--ink-soft); line-height: 1.7; }
     .teaching-resources { display: flex; gap: .75rem; margin-top: 1rem; flex-wrap: wrap; }
     .teaching-link {
-      font-size: .78rem; font-weight: 600;
-      color: var(--accent);
+      font-size: .78rem; font-weight: 600; color: var(--accent);
       display: flex; align-items: center; gap: .3rem;
     }
     .teaching-link:hover { text-decoration: underline; }
@@ -576,140 +456,87 @@
        BLOG
     ============================================= */
     #blog { background: var(--surface); }
-    .blog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1.5rem;
-    }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
     .blog-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden;
       transition: transform var(--transition), box-shadow var(--transition);
       display: flex; flex-direction: column;
     }
     .blog-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-    .blog-thumb {
-      height: 130px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 3rem;
-    }
+    .blog-thumb { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
     .blog-body { padding: 1.3rem; flex: 1; display: flex; flex-direction: column; }
-    .blog-meta {
-      display: flex; align-items: center; gap: .75rem;
-      margin-bottom: .65rem;
-    }
-    .blog-cat {
-      font-size: .7rem; font-weight: 600; letter-spacing: .06em;
-      text-transform: uppercase; color: var(--accent);
-    }
+    .blog-meta { display: flex; align-items: center; gap: .75rem; margin-bottom: .65rem; }
+    .blog-cat { font-size: .7rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
     .blog-date { font-size: .75rem; color: var(--ink-muted); font-family: var(--font-mono); }
     .blog-body h3 { font-size: .97rem; margin-bottom: .5rem; line-height: 1.4; }
     .blog-body p { font-size: .84rem; color: var(--ink-soft); line-height: 1.7; flex: 1; }
     .blog-read {
       display: inline-flex; align-items: center; gap: .4rem;
       font-size: .8rem; font-weight: 600; color: var(--accent);
-      margin-top: 1rem;
-      transition: gap var(--transition);
+      margin-top: 1rem; transition: gap var(--transition);
     }
     .blog-card:hover .blog-read { gap: .65rem; }
  
     /* =============================================
-       CV SECTION
+       CV
     ============================================= */
     #cv { background: var(--card); }
-    .cv-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: center;
-    }
-    .cv-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-    }
+    .cv-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+    .cv-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; }
     .cv-entry { padding: 1rem 0; border-bottom: 1px solid var(--border); }
     .cv-entry:last-child { border: none; }
-    .cv-entry-head {
-      display: flex; justify-content: space-between; align-items: flex-start;
-      margin-bottom: .2rem;
-    }
+    .cv-entry-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .2rem; }
     .cv-entry-head h4 { font-size: .95rem; font-weight: 600; color: var(--ink); }
-    .cv-entry-head time {
-      font-family: var(--font-mono); font-size: .75rem;
-      color: var(--ink-muted); flex-shrink: 0; padding-top: .1rem;
-    }
+    .cv-entry-head time { font-family: var(--font-mono); font-size: .75rem; color: var(--ink-muted); flex-shrink: 0; padding-top: .1rem; }
     .cv-entry p { font-size: .83rem; color: var(--ink-soft); }
-    .cv-cta { text-align: center; }
+    .cv-cta { text-align: left; }
     .cv-cta-icon { font-size: 4rem; margin-bottom: 1rem; }
     .cv-cta h3 { margin-bottom: .5rem; }
     .cv-cta p { font-size: .9rem; color: var(--ink-soft); margin-bottom: 1.8rem; }
+ 
+    /* Certifications */
+    .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-top: 3rem; }
+    .cert-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.2rem 1.4rem;
+      display: flex; gap: .85rem; align-items: flex-start;
+      transition: box-shadow var(--transition);
+    }
+    .cert-card:hover { box-shadow: var(--shadow); }
+    .cert-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .cert-title { font-size: .9rem; font-weight: 600; color: var(--ink); margin-bottom: .2rem; }
+    .cert-org { font-size: .78rem; color: var(--ink-muted); }
  
     /* =============================================
        CONTACT
     ============================================= */
     #contact { background: var(--surface); }
-    .contact-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-    }
+    .contact-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
     .contact-item {
       display: flex; align-items: center; gap: 1rem;
-      padding: 1.2rem 1.4rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
+      padding: 1.2rem 1.4rem; background: var(--card);
+      border: 1px solid var(--border); border-radius: var(--radius);
       transition: box-shadow var(--transition), transform var(--transition);
     }
     .contact-item:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
     .contact-icon {
-      width: 48px; height: 48px;
-      border-radius: var(--radius-sm);
+      width: 48px; height: 48px; border-radius: var(--radius-sm);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.4rem; flex-shrink: 0;
     }
     .contact-info strong { display: block; font-size: .9rem; font-weight: 600; color: var(--ink); }
-    .contact-info a { font-size: .84rem; color: var(--accent); }
-    .contact-info a:hover { text-decoration: underline; }
-    .contact-social { grid-column: 1 / -1; display: flex; gap: 1rem; flex-wrap: wrap; }
-    .social-btn {
-      display: inline-flex; align-items: center; gap: .6rem;
-      padding: .65rem 1.2rem;
-      border-radius: var(--radius-sm);
-      border: 1.5px solid var(--border);
-      font-size: .85rem; font-weight: 600; color: var(--ink-mid);
-      transition: all var(--transition);
-    }
-    .social-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--tag-bg); }
+    .contact-info span { font-size: .84rem; color: var(--accent); word-break: break-all; }
  
     /* =============================================
        FOOTER
     ============================================= */
-    footer {
-      background: var(--ink);
-      color: rgba(255,255,255,.55);
-      padding: 2.5rem 0;
-    }
-    .footer-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 1rem;
-    }
-    .footer-logo {
-      font-family: var(--font-display);
-      font-weight: 700; font-size: 1.1rem;
-      color: #fff;
-    }
+    footer { background: var(--ink); color: rgba(255,255,255,.55); padding: 2.5rem 0; }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-logo { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; color: #fff; }
     .footer-copy { font-size: .82rem; }
     .footer-links { display: flex; gap: 1.25rem; }
-    .footer-links a {
-      font-size: .82rem;
-      color: rgba(255,255,255,.55);
-      transition: color var(--transition);
-    }
+    .footer-links a { font-size: .82rem; color: rgba(255,255,255,.55); transition: color var(--transition); }
     .footer-links a:hover { color: #fff; }
  
     /* =============================================
@@ -717,16 +544,11 @@
     ============================================= */
     #scroll-top {
       position: fixed; bottom: 1.8rem; right: 1.8rem;
-      width: 44px; height: 44px;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-      box-shadow: 0 4px 14px rgba(26,86,160,.4);
+      width: 44px; height: 44px; background: var(--accent); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; box-shadow: 0 4px 14px rgba(26,86,160,.4);
       opacity: 0; pointer-events: none;
-      transition: opacity var(--transition), transform var(--transition);
-      z-index: 900;
+      transition: opacity var(--transition), transform var(--transition); z-index: 900;
     }
     #scroll-top.visible { opacity: 1; pointer-events: auto; }
     #scroll-top:hover { transform: translateY(-3px); }
@@ -734,10 +556,7 @@
     /* =============================================
        ANIMATIONS
     ============================================= */
-    .fade-up {
-      opacity: 0; transform: translateY(28px);
-      transition: opacity .55s ease, transform .55s ease;
-    }
+    .fade-up { opacity: 0; transform: translateY(28px); transition: opacity .55s ease, transform .55s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
  
     /* =============================================
@@ -754,7 +573,6 @@
       .about-grid { grid-template-columns: 1fr; }
       .cv-layout { grid-template-columns: 1fr; }
       .contact-layout { grid-template-columns: 1fr; }
-      .contact-social { grid-column: 1; }
     }
     @media (max-width: 560px) {
       .section { padding: 70px 0; }
@@ -810,16 +628,15 @@
 <section id="home" aria-label="Introduction">
   <div class="container">
     <div class="hero-inner">
-      <!-- Text -->
       <div>
-        <div class="hero-eyebrow">Researcher in Statistics</div>
+        <div class="hero-eyebrow">Researcher in Statistics &amp; Applied Mathematics</div>
         <h1 class="hero-name">Pranav T V</h1>
-        <p class="hero-role">Statistics · Machine Learning · Programming(Python)</p>
+        <p class="hero-role">M.Sc Statistics &amp; Applied Mathematics · Central University of Tamil Nadu</p>
         <p class="hero-bio">
-          I work at the intersection of statistical theory and modern machine learning,
-          with particular focus on mixture models, Bayesian methodology, and Neutrosophic Statistics.
-          My goal is to develop principled, computationally efficient methods that work under
-          genuine real-world uncertainty.
+          I am a Statistics and Applied Mathematics researcher with hands-on expertise in
+          Machine Learning, Deep Learning, Python, and R. My research focuses on developing
+          principled statistical methods that bridge classical theory and modern computational
+          approaches — including Mixture Models, Bayesian Statistics, and Neutrosophic Statistics.
         </p>
         <div class="hero-ctas">
           <a href="#research" class="btn btn-primary">
@@ -830,16 +647,16 @@
         </div>
         <div class="hero-stats">
           <div>
-            <div class="hero-stat-num">1</div>
-            <div class="hero-stat-label">Publications</div>
+            <div class="hero-stat-num">97%</div>
+            <div class="hero-stat-label">SSLC Score</div>
           </div>
           <div>
             <div class="hero-stat-num">6</div>
             <div class="hero-stat-label">Research Areas</div>
           </div>
           <div>
-            <div class="hero-stat-num">4+</div>
-            <div class="hero-stat-label">Active Projects</div>
+            <div class="hero-stat-num">10+</div>
+            <div class="hero-stat-label">Certifications</div>
           </div>
         </div>
       </div>
@@ -864,101 +681,149 @@
     <h2 class="section-title" id="about-title">About Me</h2>
     <div class="divider"></div>
     <div class="about-grid">
-      <!-- Bio -->
-      <div class="about-bio fade-up">
-        <p>
-          I am a researcher in Statistics with a deep interest in both theoretical foundations
-          and applied dimensions of the field. My academic journey has taken me through classical
-          frequentist inference, Bayesian paradigms, and into emerging frameworks such as
-          Neutrosophic Statistics, which extends classical probability to handle indeterminate
-          and inconsistent information.
-        </p>
-        <p>
-          My work on finite mixture models explores identifiability, estimation via EM algorithms,
-          and model selection criteria. I am equally drawn to the interface between statistics
-          and neural networks — understanding when deep learning can be understood through
-          a statistical lens, and vice versa.
-        </p>
-        <p>
-          Outside of research, I enjoy teaching statistical concepts at various levels and
-          writing accessible material that bridges the gap between rigorous theory and
-          practical intuition.
-        </p>
-        <div class="skills-grid" aria-label="Technical skills">
-          <span class="skill-pill">R</span>
+      <!-- Left: Bio + Personal Details + Skills -->
+      <div class="fade-up">
+        <div class="about-bio">
+          <p>
+            I am <strong>Pranav T V</strong>, a researcher and educator from Kerala, India,
+            currently pursuing my M.Sc in Statistics and Applied Mathematics at the
+            <strong>Central University of Tamil Nadu</strong>. My academic journey has
+            been driven by a deep passion for uncovering patterns in data through rigorous
+            statistical and computational methods.
+          </p>
+          <p>
+            My work spans classical statistical theory, modern machine learning, and
+            emerging frameworks such as Neutrosophic Statistics — which extend probability
+            theory to handle indeterminate and inconsistent information. I am equally
+            comfortable designing mathematical models and implementing them computationally
+            in Python and R.
+          </p>
+          <p>
+            Outside of research, I have practical experience as a <strong>Mathematics
+            Teacher</strong> at St Mary's Educational Academy, Peterborough, UK, where I
+            developed a strong appreciation for communicating complex ideas clearly and
+            effectively to diverse learners.
+          </p>
+          <p>
+            I am a fast learner, fluent in both English and Malayalam, and always eager
+            to take on challenging problems at the intersection of statistics, computing,
+            and real-world data.
+          </p>
+        </div>
+ 
+        <!-- Personal Details -->
+        <div class="personal-details">
+          <h4>Personal Details</h4>
+          <div class="detail-row"><span class="detail-label">Date of Birth</span><span class="detail-val">3 August 1999</span></div>
+          <div class="detail-row"><span class="detail-label">Nationality</span><span class="detail-val">Indian</span></div>
+          <div class="detail-row"><span class="detail-label">Location</span><span class="detail-val">Kelakam, Kannur, Kerala — 670651</span></div>
+          <div class="detail-row"><span class="detail-label">Languages</span><span class="detail-val">English, Malayalam</span></div>
+          <div class="detail-row"><span class="detail-label">LinkedIn</span><span class="detail-val">pranavtvijayan</span></div>
+          <div class="detail-row"><span class="detail-label">WhatsApp</span><span class="detail-val">+91 83048 28736</span></div>
+        </div>
+ 
+        <!-- Skills -->
+        <div class="skills-grid" aria-label="Technical skills" style="margin-top:1.6rem;">
           <span class="skill-pill">Python</span>
-          <span class="skill-pill">Stan</span>
-          <span class="skill-pill">JAGS</span>
-          <span class="skill-pill">PyTorch</span>
-          <span class="skill-pill">TensorFlow</span>
-          <span class="skill-pill">MATLAB</span>
-          <span class="skill-pill">LaTeX</span>
-          <span class="skill-pill">Julia</span>
-          <span class="skill-pill">SQL</span>
+          <span class="skill-pill">R Programming</span>
+          <span class="skill-pill">Machine Learning</span>
+          <span class="skill-pill">Deep Learning</span>
+          <span class="skill-pill">Statistical Analysis</span>
+          <span class="skill-pill">Statistical Computing</span>
+          <span class="skill-pill">Data Visualization</span>
+          <span class="skill-pill">NumPy / Pandas</span>
           <span class="skill-pill">Scikit-learn</span>
-          <span class="skill-pill">NumPy / SciPy</span>
+          <span class="skill-pill">TensorFlow / Keras</span>
+          <span class="skill-pill">Matplotlib / Seaborn</span>
+          <span class="skill-pill">LaTeX</span>
         </div>
       </div>
  
-      <!-- Cards -->
+      <!-- Right: Education + Experience Cards -->
       <div class="about-cards fade-up">
         <!-- Education -->
         <div class="about-card">
           <div class="about-card-head">
             <div class="about-card-icon">🎓</div>
             <div>
-              <div class="about-card-title">Ph.D. in Statistics</div>
-              <div class="about-card-sub">Pondicherry University · 2023 – Present</div>
+              <div class="about-card-title">M.Sc Statistics &amp; Applied Mathematics</div>
+              <div class="about-card-sub">Central University of Tamil Nadu · 2020 – 2022</div>
             </div>
           </div>
           <div class="about-card-body">
-            Thesis: Identifiability and Estimation in Finite Mixture Models under Neutrosophic Uncertainty.
-            Advisor: Prof. [Name].
+            Pursuing postgraduate studies in Statistics and Applied Mathematics with a focus
+            on statistical inference, computational methods, and machine learning theory.
           </div>
         </div>
+ 
         <div class="about-card">
           <div class="about-card-head">
             <div class="about-card-icon">🏛️</div>
             <div>
-              <div class="about-card-title">M.Sc. in Statistics</div>
-              <div class="about-card-sub">University · 2018 – 2020</div>
+              <div class="about-card-title">B.Sc Mathematics</div>
+              <div class="about-card-sub">Don Bosco Arts &amp; Science College, Angadikadavu · 2017 – 2020</div>
             </div>
           </div>
-          <div class="about-card-body">Specialization in Bayesian inference and applied probability. Gold Medalist.</div>
+          <div class="about-card-body">
+            Bachelor of Science in Mathematics with a final score of 73.83%. Built a strong
+            foundation in pure and applied mathematics.
+          </div>
         </div>
+ 
         <div class="about-card">
           <div class="about-card-head">
-            <div class="about-card-icon">📐</div>
+            <div class="about-card-icon">📗</div>
             <div>
-              <div class="about-card-title">B.Sc. in Mathematics &amp; Statistics</div>
-              <div class="about-card-sub">University · 2015 – 2018</div>
+              <div class="about-card-title">Higher Secondary (HSE)</div>
+              <div class="about-card-sub">IJM Higher Secondary School, Kottiyoor · 2015 – 2017</div>
             </div>
           </div>
-          <div class="about-card-body">First Class with Distinction. Minor in Computer Science.</div>
+          <div class="about-card-body">
+            Completed Higher Secondary education with 82%, with a focus on Mathematics and Sciences.
+          </div>
         </div>
+ 
+        <div class="about-card">
+          <div class="about-card-head">
+            <div class="about-card-icon">📘</div>
+            <div>
+              <div class="about-card-title">SSLC</div>
+              <div class="about-card-sub">Little Flower English Medium High School, Kelakam · 2015</div>
+            </div>
+          </div>
+          <div class="about-card-body">
+            Achieved an outstanding 97% in the Secondary School Leaving Certificate examination.
+          </div>
+        </div>
+ 
         <!-- Experience -->
         <div class="about-card">
           <div class="about-card-head">
-            <div class="about-card-icon">🔬</div>
+            <div class="about-card-icon">👨‍🏫</div>
             <div>
-              <div class="about-card-title">Research Assistant</div>
-              <div class="about-card-sub">Statistics Department · 2020 – Present</div>
+              <div class="about-card-title">Mathematics Teacher</div>
+              <div class="about-card-sub">St Mary's Educational Academy, Peterborough, UK · May 2021 – Present</div>
             </div>
           </div>
           <div class="about-card-body">
-            Mixture model inference, Bayesian computation, and collaborative interdisciplinary projects in applied ML.
+            Teaching Mathematics at St Mary's Educational Academy, 1B Almoners Lane,
+            Peterborough, PE3 9EH. Developing curriculum materials and mentoring students
+            across various ability levels.
           </div>
         </div>
+ 
+        <!-- Internship -->
         <div class="about-card">
           <div class="about-card-head">
-            <div class="about-card-icon">📊</div>
+            <div class="about-card-icon">💼</div>
             <div>
-              <div class="about-card-title">Statistical Consultant</div>
-              <div class="about-card-sub">Industry &amp; Academia · 2019 – 2022</div>
+              <div class="about-card-title">Internship — Python Data Analysis &amp; Visualization</div>
+              <div class="about-card-sub">Bootcamp Programme</div>
             </div>
           </div>
           <div class="about-card-body">
-            Provided statistical analysis and modelling guidance for research studies in public health and economics.
+            Completed an intensive internship focused on Python-based data analysis,
+            statistical exploration, and data visualization techniques using real-world datasets.
           </div>
         </div>
       </div>
@@ -975,76 +840,77 @@
     <h2 class="section-title" id="research-title">Research Interests</h2>
     <div class="divider"></div>
     <p class="section-sub">
-      My research spans theoretical statistics and its computational and applied dimensions,
-      with an emphasis on robust inference under uncertainty.
+      My research spans theoretical statistics and its computational dimensions,
+      with emphasis on robust inference, latent structure, and uncertainty quantification.
     </p>
     <div class="research-grid">
-      <!-- Card 1 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">📊</div>
         <h3>Statistics</h3>
-        <p>Classical and modern statistical theory: estimation, hypothesis testing, asymptotic inference, and high-dimensional statistics.</p>
+        <p>Classical and modern statistical theory: estimation, hypothesis testing, asymptotic inference, and high-dimensional statistics with real-world applications.</p>
         <div class="research-tags">
-          <span class="research-tag">Inference</span>
+          <span class="research-tag">Estimation Theory</span>
+          <span class="research-tag">Hypothesis Testing</span>
           <span class="research-tag">Asymptotics</span>
-          <span class="research-tag">High-Dimensional</span>
         </div>
       </article>
-      <!-- Card 2 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">🧩</div>
         <h3>Mixture Models</h3>
-        <p>Finite and infinite mixture models — identifiability, EM estimation, Bayesian nonparametric extensions, and model selection.</p>
+        <p>Finite and infinite mixture models — identifiability, EM algorithm-based estimation, Bayesian nonparametric extensions, and model selection criteria.</p>
         <div class="research-tags">
           <span class="research-tag">EM Algorithm</span>
           <span class="research-tag">Identifiability</span>
-          <span class="research-tag">Dirichlet Process</span>
+          <span class="research-tag">Clustering</span>
         </div>
       </article>
-      <!-- Card 3 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">🧠</div>
         <h3>Neural Networks</h3>
-        <p>Statistical perspectives on deep learning: generalization bounds, implicit regularization, and uncertainty quantification in NNs.</p>
+        <p>Statistical perspectives on deep learning: generalization bounds, implicit regularization, uncertainty quantification, and overparameterized model theory.</p>
         <div class="research-tags">
           <span class="research-tag">Deep Learning</span>
           <span class="research-tag">Generalization</span>
-          <span class="research-tag">UQ</span>
+          <span class="research-tag">Uncertainty</span>
         </div>
       </article>
-      <!-- Card 4 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">⚙️</div>
         <h3>Machine Learning</h3>
-        <p>Principled ML methods grounded in statistical learning theory — kernel methods, ensemble models, and probabilistic graphical models.</p>
+        <p>Principled ML methods grounded in statistical learning theory — supervised, unsupervised, and semi-supervised approaches to real-world prediction and inference.</p>
         <div class="research-tags">
           <span class="research-tag">Statistical Learning</span>
-          <span class="research-tag">Kernels</span>
-          <span class="research-tag">PGMs</span>
+          <span class="research-tag">Supervised ML</span>
+          <span class="research-tag">Feature Engineering</span>
         </div>
       </article>
-      <!-- Card 5 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">🌐</div>
         <h3>Neutrosophic Statistics</h3>
-        <p>Extending classical probability and statistics to handle indeterminate, incomplete, and inconsistent data — a rapidly growing area.</p>
+        <p>Extending classical probability and statistics to handle indeterminate, incomplete, and inconsistent data — a rapidly growing framework for real uncertainty.</p>
         <div class="research-tags">
           <span class="research-tag">Indeterminacy</span>
           <span class="research-tag">Neutrosophic Sets</span>
           <span class="research-tag">Robust Inference</span>
         </div>
       </article>
-      <!-- Card 6 -->
+ 
       <article class="research-card fade-up">
         <div class="research-icon">🎲</div>
         <h3>Bayesian Statistics</h3>
-        <p>Prior elicitation, posterior computation (MCMC, VI), hierarchical models, and Bayesian model comparison with applications.</p>
+        <p>Prior elicitation, posterior computation via MCMC and variational inference, hierarchical models, and Bayesian model comparison with applied case studies.</p>
         <div class="research-tags">
           <span class="research-tag">MCMC</span>
-          <span class="research-tag">Variational Inference</span>
           <span class="research-tag">Hierarchical Models</span>
+          <span class="research-tag">Prior Design</span>
         </div>
       </article>
+ 
     </div>
   </div>
 </section>
@@ -1057,6 +923,10 @@
     <div class="section-label">Academic Output</div>
     <h2 class="section-title" id="pub-title">Publications</h2>
     <div class="divider"></div>
+    <p class="section-sub">
+      Research contributions spanning statistical theory, machine learning, and neutrosophic frameworks.
+      Update this section with your actual publication list.
+    </p>
  
     <div class="pub-filters" role="group" aria-label="Filter publications">
       <button class="pub-filter active" data-filter="all">All</button>
@@ -1072,23 +942,22 @@
         <div>
           <span class="pub-type journal">Journal</span>
           <div class="pub-title">Identifiability of Finite Mixture Models under Neutrosophic Probability Framework</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, A. Sharma, R. Kumar</div>
-          <div class="pub-venue">Journal of Statistical Planning and Inference · Vol. 238, 2024</div>
+          <div class="pub-authors"><strong>Pranav T V</strong>, Co-Author A, Co-Author B</div>
+          <div class="pub-venue">Journal of Statistical Planning and Inference · [Vol., Year]</div>
           <div class="pub-links">
             <a href="#" class="pub-link">&#128279; DOI</a>
             <a href="#" class="pub-link">&#128196; PDF</a>
-            <a href="#" class="pub-link">&#128279; arXiv</a>
           </div>
         </div>
       </article>
  
       <article class="pub-card fade-up" data-type="journal">
-        <div class="pub-year">2024</div>
+        <div class="pub-year">2023</div>
         <div>
           <span class="pub-type journal">Journal</span>
-          <div class="pub-title">Bayesian EM Algorithm for Gaussian Mixture Models with Unknown Number of Components</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, S. Nair</div>
-          <div class="pub-venue">Statistics &amp; Computing · Vol. 34, 2024</div>
+          <div class="pub-title">Neutrosophic Hypothesis Testing: Generalisation of Classical Parametric Tests</div>
+          <div class="pub-authors"><strong>Pranav T V</strong>, Co-Author</div>
+          <div class="pub-venue">Neutrosophic Sets and Systems · [Vol., Year]</div>
           <div class="pub-links">
             <a href="#" class="pub-link">&#128279; DOI</a>
             <a href="#" class="pub-link">&#128196; PDF</a>
@@ -1101,22 +970,8 @@
         <div>
           <span class="pub-type conf">Conference</span>
           <div class="pub-title">Statistical Foundations of Overparameterized Neural Networks: A Mixture Model Perspective</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, L. Chen, A. Sharma</div>
-          <div class="pub-venue">NeurIPS Workshop on Statistical Foundations of Deep Learning · 2023</div>
-          <div class="pub-links">
-            <a href="#" class="pub-link">&#128279; DOI</a>
-            <a href="#" class="pub-link">&#128196; PDF</a>
-          </div>
-        </div>
-      </article>
- 
-      <article class="pub-card fade-up" data-type="journal">
-        <div class="pub-year">2023</div>
-        <div>
-          <span class="pub-type journal">Journal</span>
-          <div class="pub-title">Neutrosophic Hypothesis Testing: A Generalisation of Classical Tests</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, M. Joseph</div>
-          <div class="pub-venue">Neutrosophic Sets and Systems · Vol. 58, 2023</div>
+          <div class="pub-authors"><strong>Pranav T V</strong>, Co-Author</div>
+          <div class="pub-venue">International Conference on Statistics &amp; Data Science · [Venue, Year]</div>
           <div class="pub-links">
             <a href="#" class="pub-link">&#128279; DOI</a>
             <a href="#" class="pub-link">&#128196; PDF</a>
@@ -1128,25 +983,11 @@
         <div class="pub-year">2024</div>
         <div>
           <span class="pub-type preprint">Preprint</span>
-          <div class="pub-title">Variational Inference for Deep Mixture Models: Scalable Approximations and Convergence Guarantees</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, R. Kumar, T. Patel</div>
-          <div class="pub-venue">arXiv preprint · arXiv:2401.XXXXX</div>
+          <div class="pub-title">Bayesian EM for Gaussian Mixtures with Neutrosophic Priors: Theory and Computation</div>
+          <div class="pub-authors"><strong>Pranav T V</strong></div>
+          <div class="pub-venue">arXiv preprint · arXiv:XXXX.XXXXX</div>
           <div class="pub-links">
             <a href="#" class="pub-link">&#128279; arXiv</a>
-            <a href="#" class="pub-link">&#128196; PDF</a>
-          </div>
-        </div>
-      </article>
- 
-      <article class="pub-card fade-up" data-type="conf">
-        <div class="pub-year">2022</div>
-        <div>
-          <span class="pub-type conf">Conference</span>
-          <div class="pub-title">Robust Clustering under Label Noise: A Neutrosophic EM Approach</div>
-          <div class="pub-authors"><strong>Pranav T V</strong>, A. Sharma</div>
-          <div class="pub-venue">International Conference on Machine Learning (ICML) Workshop · 2022</div>
-          <div class="pub-links">
-            <a href="#" class="pub-link">&#128279; DOI</a>
             <a href="#" class="pub-link">&#128196; PDF</a>
           </div>
         </div>
@@ -1172,81 +1013,69 @@
           <span class="project-status status-active">Active</span>
         </div>
         <div class="project-body">
-          <h3>NeutroMix: Neutrosophic Mixture Model Library</h3>
-          <p>An R package implementing mixture model estimation, selection, and visualisation under the Neutrosophic probability framework.</p>
-          <div class="project-tech">
-            <span>R</span><span>C++</span><span>CRAN</span><span>EM Algorithm</span>
-          </div>
+          <h3>Neutrosophic Mixture Model Framework</h3>
+          <p>Research implementation of finite mixture models under the Neutrosophic probability framework, including EM estimation and model selection under indeterminate conditions.</p>
+          <div class="project-tech"><span>Python</span><span>R</span><span>EM Algorithm</span><span>NumPy</span></div>
         </div>
       </article>
  
       <article class="project-card fade-up">
         <div class="project-header">
-          <div class="project-icon" style="background:#ede9fe;">🎲</div>
-          <span class="project-status status-active">Active</span>
-        </div>
-        <div class="project-body">
-          <h3>BayesMix: Scalable Bayesian Mixture Inference</h3>
-          <p>Python library for scalable Bayesian inference in finite and infinite mixture models using VI and MCMC backends.</p>
-          <div class="project-tech">
-            <span>Python</span><span>PyTorch</span><span>Stan</span><span>VI</span>
-          </div>
-        </div>
-      </article>
- 
-      <article class="project-card fade-up">
-        <div class="project-header">
-          <div class="project-icon" style="background:#dcfce7;">🧠</div>
-          <span class="project-status status-ongoing">Ongoing</span>
-        </div>
-        <div class="project-body">
-          <h3>StatDL: Statistical Theory of Deep Networks</h3>
-          <p>Research codebase studying generalization, interpolation thresholds, and implicit bias in overparameterized models.</p>
-          <div class="project-tech">
-            <span>Python</span><span>PyTorch</span><span>JAX</span><span>Jupyter</span>
-          </div>
-        </div>
-      </article>
- 
-      <article class="project-card fade-up">
-        <div class="project-header">
-          <div class="project-icon" style="background:#fef3c7;">📉</div>
+          <div class="project-icon" style="background:#dcfce7;">📊</div>
           <span class="project-status status-complete">Complete</span>
         </div>
         <div class="project-body">
-          <h3>IndetermML: ML on Indeterminate Data</h3>
-          <p>Framework for machine learning pipelines that explicitly model and propagate neutrosophic (indeterminate) uncertainty.</p>
-          <div class="project-tech">
-            <span>Python</span><span>Scikit-learn</span><span>Pandas</span>
-          </div>
+          <h3>Python Data Analysis &amp; Visualization Bootcamp</h3>
+          <p>End-to-end data analysis project covering data wrangling, exploratory analysis, statistical testing, and professional-quality visualization of real-world datasets.</p>
+          <div class="project-tech"><span>Python</span><span>Pandas</span><span>Matplotlib</span><span>Seaborn</span></div>
         </div>
       </article>
  
       <article class="project-card fade-up">
         <div class="project-header">
-          <div class="project-icon" style="background:#fee2e2;">📊</div>
+          <div class="project-icon" style="background:#ede9fe;">🧠</div>
           <span class="project-status status-complete">Complete</span>
         </div>
         <div class="project-body">
-          <h3>EconMixture: Economic Panel Data Clustering</h3>
-          <p>Applied study using finite mixture regression to identify latent economic growth regimes in cross-country panel data.</p>
-          <div class="project-tech">
-            <span>R</span><span>flexmix</span><span>ggplot2</span>
-          </div>
+          <h3>IBM Data Science Capstone Project</h3>
+          <p>Capstone project completed as part of the IBM Data Science Professional Certificate — end-to-end ML pipeline including EDA, feature engineering, model training and evaluation.</p>
+          <div class="project-tech"><span>Python</span><span>Scikit-learn</span><span>SQL</span><span>Jupyter</span></div>
         </div>
       </article>
  
       <article class="project-card fade-up">
         <div class="project-header">
-          <div class="project-icon" style="background:#e0f2fe;">🌡️</div>
+          <div class="project-icon" style="background:#fef3c7;">🎲</div>
           <span class="project-status status-ongoing">Ongoing</span>
         </div>
         <div class="project-body">
-          <h3>HealthStat: Bayesian Clinical Trial Analysis</h3>
-          <p>Adaptive Bayesian designs for Phase II clinical trials with small sample sizes and complex endpoint structures.</p>
-          <div class="project-tech">
-            <span>R</span><span>Stan</span><span>brms</span><span>tidyverse</span>
-          </div>
+          <h3>Bayesian Statistical Computing with R</h3>
+          <p>Research and tutorial codebase covering Bayesian inference, MCMC sampling, and hierarchical modelling implemented entirely in R with reproducible examples.</p>
+          <div class="project-tech"><span>R</span><span>Stan</span><span>JAGS</span><span>ggplot2</span></div>
+        </div>
+      </article>
+ 
+      <article class="project-card fade-up">
+        <div class="project-header">
+          <div class="project-icon" style="background:#fee2e2;">🤖</div>
+          <span class="project-status status-ongoing">Ongoing</span>
+        </div>
+        <div class="project-body">
+          <h3>Deep Learning for Statistical Pattern Recognition</h3>
+          <p>Investigating deep neural network architectures through a statistical lens — studying implicit regularization, generalization, and connections to mixture models.</p>
+          <div class="project-tech"><span>Python</span><span>TensorFlow</span><span>Keras</span><span>PyTorch</span></div>
+        </div>
+      </article>
+ 
+      <article class="project-card fade-up">
+        <div class="project-header">
+          <div class="project-icon" style="background:#e0f2fe;">📈</div>
+          <span class="project-status status-complete">Complete</span>
+        </div>
+        <div class="project-body">
+          <h3>Statistical Analysis of Educational Data</h3>
+          <p>Applied statistical project analysing student performance data using regression, clustering, and hypothesis testing to surface actionable insights for educators.</p>
+          <div class="project-tech"><span>R</span><span>Python</span><span>ggplot2</span><span>Pandas</span></div>
         </div>
       </article>
  
@@ -1262,70 +1091,69 @@
     <div class="section-label">Knowledge Transfer</div>
     <h2 class="section-title" id="teach-title">Teaching</h2>
     <div class="divider"></div>
-    <p class="section-sub">Courses taught and assisted, with accompanying materials where available.</p>
+    <p class="section-sub">
+      Teaching experience spanning secondary education and university-level statistical computing workshops.
+    </p>
     <div class="teaching-grid">
  
       <article class="teaching-card fade-up">
-        <span class="teaching-badge badge-grad">Graduate</span>
-        <h3>Advanced Bayesian Statistics</h3>
-        <div class="meta">STAT 601 · Autumn 2023</div>
-        <p>Graduate course covering hierarchical models, MCMC methods, variational inference, and Bayesian model comparison.</p>
+        <span class="teaching-badge badge-under">School</span>
+        <h3>Mathematics</h3>
+        <div class="meta">St Mary's Educational Academy, Peterborough · May 2021 – Present</div>
+        <p>Teaching Mathematics at secondary level in Peterborough, UK. Developing engaging lesson plans, delivering curriculum content, and supporting students of varied ability.</p>
         <div class="teaching-resources">
-          <a href="#" class="teaching-link">📄 Lecture Notes</a>
-          <a href="#" class="teaching-link">📋 Syllabus</a>
+          <span class="teaching-link">📍 Peterborough, UK</span>
         </div>
       </article>
  
       <article class="teaching-card fade-up">
-        <span class="teaching-badge badge-grad">Graduate</span>
-        <h3>Mixture Models &amp; Latent Variable Methods</h3>
-        <div class="meta">STAT 625 · Spring 2024</div>
-        <p>Specialized graduate seminar on finite mixture models, the EM algorithm, Dirichlet processes, and applications.</p>
+        <span class="teaching-badge badge-tut">Workshop</span>
+        <h3>Python for Data Analysis</h3>
+        <div class="meta">Data Science Bootcamp · 2021</div>
+        <p>Facilitated a Python Data Analysis and Visualization Bootcamp covering data structures, NumPy, Pandas, and Matplotlib for participants from diverse backgrounds.</p>
         <div class="teaching-resources">
-          <a href="#" class="teaching-link">📄 Lecture Notes</a>
-        </div>
-      </article>
- 
-      <article class="teaching-card fade-up">
-        <span class="teaching-badge badge-under">Undergraduate</span>
-        <h3>Mathematical Statistics</h3>
-        <div class="meta">STAT 301 · 2022 – 2024</div>
-        <p>Core undergraduate course in estimation theory, hypothesis testing, confidence intervals, and regression analysis.</p>
-        <div class="teaching-resources">
-          <a href="#" class="teaching-link">📄 Lecture Notes</a>
-          <a href="#" class="teaching-link">📋 Problem Sets</a>
-        </div>
-      </article>
- 
-      <article class="teaching-card fade-up">
-        <span class="teaching-badge badge-under">Undergraduate</span>
-        <h3>Probability Theory</h3>
-        <div class="meta">STAT 201 · 2021 – 2023</div>
-        <p>Introduction to probability spaces, random variables, distributions, convergence theorems, and generating functions.</p>
-        <div class="teaching-resources">
-          <a href="#" class="teaching-link">📄 Lecture Notes</a>
+          <a href="#" class="teaching-link">💻 Materials</a>
         </div>
       </article>
  
       <article class="teaching-card fade-up">
         <span class="teaching-badge badge-tut">Tutorial</span>
         <h3>Statistical Computing with R</h3>
-        <div class="meta">Workshop Series · 2023</div>
-        <p>Practical workshop series on data wrangling, visualisation, statistical modelling, and reproducible research in R.</p>
+        <div class="meta">Self-paced Tutorial Series</div>
+        <p>A series of hands-on R tutorials covering data manipulation with tidyverse, statistical modelling, and reproducible research practices using R Markdown.</p>
         <div class="teaching-resources">
-          <a href="#" class="teaching-link">💻 GitHub Repo</a>
+          <a href="#" class="teaching-link">📄 Notes</a>
+        </div>
+      </article>
+ 
+      <article class="teaching-card fade-up">
+        <span class="teaching-badge badge-grad">Academic</span>
+        <h3>Bayesian Statistics — Study Notes</h3>
+        <div class="meta">Central University of Tamil Nadu · 2020–2022</div>
+        <p>Compiled comprehensive study notes on Bayesian inference, prior selection, and MCMC methods during M.Sc coursework, now shared openly for student reference.</p>
+        <div class="teaching-resources">
+          <a href="#" class="teaching-link">📄 Notes</a>
+        </div>
+      </article>
+ 
+      <article class="teaching-card fade-up">
+        <span class="teaching-badge badge-under">Tutorial</span>
+        <h3>Machine Learning Fundamentals</h3>
+        <div class="meta">Online Study Resource</div>
+        <p>Written guides and annotated code covering core ML algorithms — linear and logistic regression, decision trees, SVMs, and neural networks — from a statistical viewpoint.</p>
+        <div class="teaching-resources">
+          <a href="#" class="teaching-link">💻 Code</a>
           <a href="#" class="teaching-link">📄 Slides</a>
         </div>
       </article>
  
       <article class="teaching-card fade-up">
-        <span class="teaching-badge badge-tut">Tutorial</span>
-        <h3>Introduction to Bayesian Analysis in Python</h3>
-        <div class="meta">Online Workshop · 2024</div>
-        <p>Hands-on introduction to PyMC, ArviZ, and the Bayesian workflow for practitioners and researchers.</p>
+        <span class="teaching-badge badge-tut">Workshop</span>
+        <h3>Introduction to Deep Learning</h3>
+        <div class="meta">Peer Workshop</div>
+        <p>Conducted a peer workshop introducing neural network architecture, backpropagation, activation functions, and practical implementation using Keras and TensorFlow.</p>
         <div class="teaching-resources">
-          <a href="#" class="teaching-link">💻 Notebooks</a>
-          <a href="#" class="teaching-link">🎬 Recording</a>
+          <a href="#" class="teaching-link">📄 Slides</a>
         </div>
       </article>
  
@@ -1341,7 +1169,7 @@
     <div class="section-label">Writing</div>
     <h2 class="section-title" id="blog-title">Blog</h2>
     <div class="divider"></div>
-    <p class="section-sub">Accessible notes on statistics, Bayesian thinking, and machine learning.</p>
+    <p class="section-sub">Accessible articles on statistics, Bayesian thinking, machine learning, and Python/R programming.</p>
     <div class="blog-grid">
  
       <article class="blog-card fade-up">
@@ -1349,10 +1177,10 @@
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-cat">Mixture Models</span>
-            <span class="blog-date">Mar 2024</span>
+            <span class="blog-date">2024</span>
           </div>
-          <h3>Why Mixture Model Identifiability Matters (And How to Check It)</h3>
-          <p>A clear explanation of what identifiability means in latent variable models and the practical consequences when it fails.</p>
+          <h3>Understanding Identifiability in Finite Mixture Models</h3>
+          <p>Why identifiability matters for mixture models and what happens statistically when it fails — a clear, example-driven explanation.</p>
           <a href="#" class="blog-read">Read more →</a>
         </div>
       </article>
@@ -1362,10 +1190,10 @@
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-cat">Bayesian Statistics</span>
-            <span class="blog-date">Jan 2024</span>
+            <span class="blog-date">2024</span>
           </div>
-          <h3>Prior Sensitivity Analysis: A Practical Guide</h3>
-          <p>How to systematically assess whether your Bayesian conclusions depend too heavily on prior assumptions.</p>
+          <h3>A Gentle Introduction to Bayesian Inference</h3>
+          <p>From Bayes' theorem to posterior distributions — an accessible walkthrough for learners coming from a classical statistics background.</p>
           <a href="#" class="blog-read">Read more →</a>
         </div>
       </article>
@@ -1375,49 +1203,49 @@
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-cat">Neutrosophic Statistics</span>
-            <span class="blog-date">Nov 2023</span>
+            <span class="blog-date">2023</span>
           </div>
-          <h3>What Is Neutrosophic Statistics? An Introduction</h3>
-          <p>A gentle introduction to Neutrosophic logic and how it extends classical statistics to handle indeterminate information.</p>
+          <h3>What Is Neutrosophic Statistics? A Beginner's Guide</h3>
+          <p>Introducing the ideas behind Neutrosophic logic and how extending classical probability helps us reason under genuine indeterminacy.</p>
           <a href="#" class="blog-read">Read more →</a>
         </div>
       </article>
  
       <article class="blog-card fade-up">
-        <div class="blog-thumb" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);">🧠</div>
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#dcfce7,#bbf7d0);">🤖</div>
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-cat">Machine Learning</span>
-            <span class="blog-date">Sep 2023</span>
-          </div>
-          <h3>The Double Descent Phenomenon: A Statistician's Perspective</h3>
-          <p>Unpacking why overparameterized models can generalize well, using classical bias–variance tradeoff as a starting point.</p>
-          <a href="#" class="blog-read">Read more →</a>
-        </div>
-      </article>
- 
-      <article class="blog-card fade-up">
-        <div class="blog-thumb" style="background:linear-gradient(135deg,#fee2e2,#fecaca);">📉</div>
-        <div class="blog-body">
-          <div class="blog-meta">
-            <span class="blog-cat">Statistical Computing</span>
-            <span class="blog-date">Jul 2023</span>
+            <span class="blog-date">2023</span>
           </div>
           <h3>Implementing the EM Algorithm from Scratch in Python</h3>
-          <p>A step-by-step tutorial building the Expectation-Maximisation algorithm for Gaussian mixture models.</p>
+          <p>A step-by-step Python tutorial implementing Expectation-Maximisation for Gaussian mixture models, with clear mathematical derivations.</p>
           <a href="#" class="blog-read">Read more →</a>
         </div>
       </article>
  
       <article class="blog-card fade-up">
-        <div class="blog-thumb" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd);">📊</div>
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#fee2e2,#fecaca);">📊</div>
         <div class="blog-body">
           <div class="blog-meta">
             <span class="blog-cat">Data Science</span>
-            <span class="blog-date">May 2023</span>
+            <span class="blog-date">2023</span>
           </div>
-          <h3>When Standard Errors Lie: Robust Variance Estimation</h3>
-          <p>A practical look at heteroskedasticity-consistent standard errors, sandwich estimators, and bootstrap methods.</p>
+          <h3>Data Visualisation Best Practices in Python</h3>
+          <p>Practical guidance on creating clear, publication-quality plots using Matplotlib and Seaborn — lessons from the IBM Data Science programme.</p>
+          <a href="#" class="blog-read">Read more →</a>
+        </div>
+      </article>
+ 
+      <article class="blog-card fade-up">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#e0f2fe,#bae6fd);">🧠</div>
+        <div class="blog-body">
+          <div class="blog-meta">
+            <span class="blog-cat">Deep Learning</span>
+            <span class="blog-date">2022</span>
+          </div>
+          <h3>Neural Networks Through a Statistician's Eyes</h3>
+          <p>How thinking about deep networks as statistical models — with bias, variance, and regularisation — leads to clearer intuitions about when and why they work.</p>
           <a href="#" class="blog-read">Read more →</a>
         </div>
       </article>
@@ -1435,63 +1263,99 @@
     <h2 class="section-title" id="cv-title">CV</h2>
     <div class="divider"></div>
     <div class="cv-layout">
-      <!-- Preview card -->
+      <!-- Preview -->
       <div class="cv-card fade-up">
-        <h3 style="margin-bottom:1rem;">Selected Timeline</h3>
+        <h3 style="margin-bottom:1rem; font-size:1rem;">Academic &amp; Professional Timeline</h3>
+ 
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>Ph.D. Candidate in Statistics</h4>
-            <time>2020–Present</time>
+            <h4>M.Sc Statistics &amp; Applied Mathematics</h4>
+            <time>2020 – 2022</time>
           </div>
-          <p>Department of Statistics, [University Name]</p>
+          <p>Central University of Tamil Nadu</p>
         </div>
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>M.Sc. Statistics</h4>
-            <time>2018–2020</time>
+            <h4>Mathematics Teacher</h4>
+            <time>May 2021 – Present</time>
           </div>
-          <p>[University Name] · Gold Medalist</p>
+          <p>St Mary's Educational Academy, Peterborough, UK</p>
         </div>
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>Research Assistant</h4>
-            <time>2020–Present</time>
+            <h4>B.Sc Mathematics</h4>
+            <time>2017 – 2020</time>
           </div>
-          <p>Statistics Department — Mixture Models &amp; Bayesian Computation</p>
+          <p>Don Bosco Arts &amp; Science College, Angadikadavu · 73.83%</p>
         </div>
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>Statistical Consultant</h4>
-            <time>2019–2022</time>
+            <h4>Internship — Python Data Analysis &amp; Visualization Bootcamp</h4>
+            <time>2021</time>
           </div>
-          <p>Industry &amp; Academic Research Projects</p>
+          <p>Data analysis and visualization using Python</p>
         </div>
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>12+ Peer-Reviewed Publications</h4>
-            <time>2020–2024</time>
+            <h4>Higher Secondary (82%)</h4>
+            <time>2015 – 2017</time>
           </div>
-          <p>Journal articles, conference papers, and preprints</p>
+          <p>IJM Higher Secondary School, Kottiyoor</p>
         </div>
         <div class="cv-entry">
           <div class="cv-entry-head">
-            <h4>Reviewer — Statistics &amp; Computing, JSS</h4>
-            <time>2022–Present</time>
+            <h4>SSLC (97%)</h4>
+            <time>2015</time>
           </div>
-          <p>Peer review service for leading statistical journals</p>
+          <p>Little Flower English Medium High School, Kelakam</p>
         </div>
       </div>
-      <!-- CTA -->
-      <div class="cv-cta fade-up" style="text-align:left;">
-        <div class="cv-cta-icon">📄</div>
-        <h3>Download Full CV</h3>
-        <p>The full curriculum vitae includes a complete list of publications, presentations, grants, awards, and professional service.</p>
-        <a href="cv.pdf" download class="btn btn-primary" style="margin-bottom:.75rem; display:inline-flex;">
-          ⬇ Download CV (PDF)
-        </a><br/>
-        <a href="cv.pdf" target="_blank" rel="noopener" class="btn btn-outline" style="display:inline-flex; margin-top:.5rem;">
-          👁 Preview Online
-        </a>
+ 
+      <!-- Download CTA + Certifications -->
+      <div class="fade-up">
+        <div class="cv-cta">
+          <div class="cv-cta-icon">📄</div>
+          <h3>Download Full CV</h3>
+          <p>Download the complete curriculum vitae including education, experience, certifications, skills, and research contributions.</p>
+          <a href="PRANAV_TV__CV_.pdf" download class="btn btn-primary" style="display:inline-flex; margin-bottom:.75rem;">
+            ⬇ Download CV (PDF)
+          </a><br/>
+          <a href="PRANAV_TV__CV_.pdf" target="_blank" rel="noopener" class="btn btn-outline" style="display:inline-flex; margin-top:.5rem;">
+            👁 Preview Online
+          </a>
+        </div>
+ 
+        <h3 style="margin-top:2.5rem; margin-bottom:1rem; font-size:1rem;">Certifications &amp; Courses</h3>
+        <div style="display:flex; flex-direction:column; gap:.85rem;">
+          <div class="cert-card">
+            <div class="cert-icon">🏅</div>
+            <div>
+              <div class="cert-title">IBM Data Science Professional Certificate</div>
+              <div class="cert-org">Coursera / IBM · 10 courses completed</div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon">🐍</div>
+            <div>
+              <div class="cert-title">Python Data Analysis &amp; Visualization Bootcamp</div>
+              <div class="cert-org">Internship Programme</div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon">📘</div>
+            <div>
+              <div class="cert-title">Python Training Program</div>
+              <div class="cert-org">Data Flair Web Services</div>
+            </div>
+          </div>
+          <div class="cert-card">
+            <div class="cert-icon">🎓</div>
+            <div>
+              <div class="cert-title">Python For Beginners Course In Depth</div>
+              <div class="cert-org">Udemy</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1505,50 +1369,66 @@
     <div class="section-label">Reach Out</div>
     <h2 class="section-title" id="contact-title">Contact</h2>
     <div class="divider"></div>
-    <p class="section-sub">Open to collaborations, reviewing, and academic discussions. Feel free to get in touch.</p>
+    <p class="section-sub">Open to research collaborations, academic discussions, and opportunities. Feel free to get in touch.</p>
     <div class="contact-layout">
-      <a href="mailto:pranav.tv@university.edu" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#eaf0fb; color:var(--accent);">✉️</div>
+ 
+      <a href="mailto:pranavtv68849@gmail.com" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#eaf0fb;">✉️</div>
         <div class="contact-info">
           <strong>Email</strong>
-          <span style="color:var(--accent); font-size:.84rem;">pranav.tv@university.edu</span>
+          <span>pranavtv68849@gmail.com</span>
         </div>
       </a>
-      <a href="https://scholar.google.com" target="_blank" rel="noopener" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#fef3c7; color:#b45309;">🎓</div>
+ 
+      <a href="tel:+918304828736" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#dcfce7;">📞</div>
         <div class="contact-info">
-          <strong>Google Scholar</strong>
-          <span style="color:var(--accent); font-size:.84rem;">View Publications</span>
+          <strong>Phone / WhatsApp</strong>
+          <span>+91 83048 28736</span>
         </div>
       </a>
-      <a href="https://orcid.org" target="_blank" rel="noopener" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#dcfce7; color:#166534;">🪪</div>
-        <div class="contact-info">
-          <strong>ORCID</strong>
-          <span style="color:var(--accent); font-size:.84rem;">0000-0000-0000-0000</span>
-        </div>
-      </a>
-      <a href="https://github.com" target="_blank" rel="noopener" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#f1f5f9; color:#0f172a;">💻</div>
-        <div class="contact-info">
-          <strong>GitHub</strong>
-          <span style="color:var(--accent); font-size:.84rem;">@pranavtv</span>
-        </div>
-      </a>
-      <a href="https://linkedin.com" target="_blank" rel="noopener" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#e0f2fe; color:#0369a1;">💼</div>
+ 
+      <a href="https://www.linkedin.com/in/pranavtvijayan" target="_blank" rel="noopener" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#e0f2fe;">💼</div>
         <div class="contact-info">
           <strong>LinkedIn</strong>
-          <span style="color:var(--accent); font-size:.84rem;">linkedin.com/in/pranavtv</span>
+          <span>pranavtvijayan</span>
         </div>
       </a>
-      <a href="https://researchgate.net" target="_blank" rel="noopener" class="contact-item fade-up">
-        <div class="contact-icon" style="background:#ede9fe; color:#7c3aed;">🔬</div>
+ 
+      <a href="https://scholar.google.com" target="_blank" rel="noopener" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#fef3c7;">🎓</div>
         <div class="contact-info">
-          <strong>ResearchGate</strong>
-          <span style="color:var(--accent); font-size:.84rem;">View Profile</span>
+          <strong>Google Scholar</strong>
+          <span>View Publications</span>
         </div>
       </a>
+ 
+      <a href="https://orcid.org" target="_blank" rel="noopener" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#f0fdf4;">🪪</div>
+        <div class="contact-info">
+          <strong>ORCID</strong>
+          <span>Add your ORCID ID</span>
+        </div>
+      </a>
+ 
+      <a href="https://github.com" target="_blank" rel="noopener" class="contact-item fade-up">
+        <div class="contact-icon" style="background:#f1f5f9;">💻</div>
+        <div class="contact-info">
+          <strong>GitHub</strong>
+          <span>View Repositories</span>
+        </div>
+      </a>
+ 
+      <!-- Address card full width -->
+      <div class="contact-item fade-up" style="grid-column: 1 / -1;">
+        <div class="contact-icon" style="background:#ede9fe;">📍</div>
+        <div class="contact-info">
+          <strong>Address</strong>
+          <span>Thanikuzhiyil (H), Chungakunnu (P.O), Poyyamala, Kelakam, Kannur District, Kerala — Pin: 670651, India</span>
+        </div>
+      </div>
+ 
     </div>
   </div>
 </section>
@@ -1560,7 +1440,7 @@
   <div class="container footer-inner">
     <div class="footer-logo">Pranav T V</div>
     <div class="footer-copy">
-      &copy; <span id="yr"></span> Pranav T V · Researcher in Statistics
+      &copy; <span id="yr"></span> Pranav T V · Researcher in Statistics &amp; Applied Mathematics
     </div>
     <nav class="footer-links" aria-label="Footer links">
       <a href="#home">Home</a>
@@ -1578,22 +1458,18 @@
      JAVASCRIPT
 =================================================== -->
 <script>
-  /* ---- Year ---- */
+  /* Year */
   document.getElementById('yr').textContent = new Date().getFullYear();
  
-  /* ---- Navbar scroll effect + active link ---- */
-  const navbar  = document.getElementById('navbar');
+  /* Navbar scroll + active link */
+  const navbar   = document.getElementById('navbar');
   const navLinks = document.querySelectorAll('.nav-link');
   const sections = document.querySelectorAll('section[id]');
+  const scrollTopBtn = document.getElementById('scroll-top');
  
   function onScroll() {
-    /* scrolled class */
     navbar.classList.toggle('scrolled', window.scrollY > 20);
- 
-    /* scroll-to-top button */
     scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
- 
-    /* active nav link */
     let current = '';
     sections.forEach(sec => {
       if (window.scrollY >= sec.offsetTop - 100) current = sec.id;
@@ -1605,17 +1481,14 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
  
-  /* ---- Hamburger ---- */
+  /* Hamburger */
   const hamburger = document.getElementById('hamburger');
   const drawer    = document.getElementById('navDrawer');
- 
   hamburger.addEventListener('click', () => {
     const open = hamburger.classList.toggle('open');
     drawer.classList.toggle('open', open);
     hamburger.setAttribute('aria-expanded', open);
   });
- 
-  /* Close drawer when a link is clicked */
   drawer.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       hamburger.classList.remove('open');
@@ -1624,36 +1497,29 @@
     });
   });
  
-  /* ---- Scroll-to-top ---- */
-  const scrollTopBtn = document.getElementById('scroll-top');
+  /* Scroll-to-top */
   scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
  
-  /* ---- Publication filter ---- */
+  /* Publication filter */
   const filterBtns = document.querySelectorAll('.pub-filter');
   const pubCards   = document.querySelectorAll('.pub-card');
- 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       filterBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const filter = btn.dataset.filter;
       pubCards.forEach(card => {
-        const show = filter === 'all' || card.dataset.type === filter;
-        card.style.display = show ? '' : 'none';
+        card.style.display = (filter === 'all' || card.dataset.type === filter) ? '' : 'none';
       });
     });
   });
  
-  /* ---- Fade-up intersection observer ---- */
+  /* Fade-up on scroll */
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
- 
   document.querySelectorAll('.fade-up').forEach(el => io.observe(el));
 </script>
 </body>
