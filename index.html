@@ -1,52 +1,179 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Pranav | Researcher</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 900px;
-            margin: auto;
-            padding: 40px;
-            line-height: 1.7;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        h1 {
-            color: #2c3e50;
-        }
+<title>Pranav T V | Researcher</title>
 
-        h2 {
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 5px;
-        }
+<style>
 
-        .section {
-            margin-top: 40px;
-        }
-    </style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    line-height:1.7;
+    color:#333;
+    background:#f8f9fa;
+}
+
+header{
+    background:#1f2937;
+    color:white;
+    text-align:center;
+    padding:60px 20px;
+}
+
+header h1{
+    font-size:3rem;
+}
+
+header p{
+    font-size:1.2rem;
+    margin-top:10px;
+}
+
+nav{
+    background:white;
+    text-align:center;
+    padding:15px;
+    box-shadow:0 2px 5px rgba(0,0,0,0.1);
+    position:sticky;
+    top:0;
+}
+
+nav a{
+    text-decoration:none;
+    color:#1f2937;
+    margin:0 15px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+    padding:40px 20px;
+}
+
+section{
+    background:white;
+    margin-bottom:25px;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+h2{
+    color:#1f2937;
+    margin-bottom:15px;
+}
+
+ul{
+    margin-left:25px;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    background:#1f2937;
+    color:white;
+}
+
+.button{
+    display:inline-block;
+    background:#2563eb;
+    color:white;
+    padding:10px 20px;
+    border-radius:5px;
+    text-decoration:none;
+    margin-top:10px;
+}
+
+.profile{
+    text-align:center;
+}
+
+.profile img{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:20px;
+    border:5px solid #ddd;
+}
+
+@media(max-width:700px){
+
+header h1{
+font-size:2rem;
+}
+
+nav a{
+display:block;
+margin:10px 0;
+}
+
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>Pranav</h1>
+<header>
+    <h1>Pranav T V</h1>
 
-<p>
-Researcher in Statistics with interests in
-Mixture Models, Neural Networks, Machine Learning,
-and Neutrosophic Statistics.
-</p>
+    <p>
+        Researcher in Statistics
+    </p>
+</header>
 
-<div class="section">
+<nav>
+    <a href="#about">About</a>
+    <a href="#research">Research</a>
+    <a href="#publications">Publications</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+</nav>
+
+<div class="container">
+
+<section class="profile">
+
+    <!-- Upload your photo as profile.jpg -->
+    <img src="profile.jpg" alt="Pranav">
+
+    <h2>Welcome</h2>
+
+    <p>
+        Welcome to my personal academic website.
+        My research interests include Statistics,
+        Mixture Models, Neural Networks,
+        Machine Learning, and Neutrosophic Statistics.
+    </p>
+
+</section>
+
+<section id="about">
+
 <h2>About Me</h2>
 
 <p>
-Welcome to my academic website.
-I am interested in statistical modeling,
-machine learning, and advanced data analysis.
+I am a researcher interested in theoretical and applied statistics.
+My work focuses on statistical modeling, machine learning,
+data analysis, and modern computational methods.
+This website presents my research activities,
+publications, projects, and academic achievements.
 </p>
-</div>
 
-<div class="section">
+</section>
+
+<section id="research">
+
 <h2>Research Interests</h2>
 
 <ul>
@@ -54,25 +181,124 @@ machine learning, and advanced data analysis.
 <li>Neural Networks</li>
 <li>Machine Learning</li>
 <li>Neutrosophic Statistics</li>
+<li>Bayesian Statistics</li>
 <li>Statistical Computing</li>
+<li>Data Science</li>
 </ul>
-</div>
 
-<div class="section">
+</section>
+
+<section id="publications">
+
 <h2>Publications</h2>
 
 <p>
 Publication list will be added here.
 </p>
-</div>
 
-<div class="section">
+<ul>
+
+<li>
+Author Name (Year). Title of Paper.
+Journal Name.
+</li>
+
+<li>
+Author Name (Year). Title of Paper.
+Journal Name.
+</li>
+
+</ul>
+
+</section>
+
+<section id="projects">
+
+<h2>Projects</h2>
+
+<ul>
+
+<li>
+Statistical Analysis using R
+</li>
+
+<li>
+Neural Network Applications
+</li>
+
+<li>
+Mixture Model Research
+</li>
+
+<li>
+Machine Learning Projects
+</li>
+
+</ul>
+
+</section>
+
+<section>
+
+<h2>Curriculum Vitae</h2>
+
+<p>
+Upload your CV as <b>CV.pdf</b> in the repository.
+</p>
+
+<a href="CV.pdf" class="button">
+Download CV
+</a>
+
+</section>
+
+<section id="contact">
+
 <h2>Contact</h2>
 
 <p>
-Email: pranavtvijayan@gmail.com
+Email: your-email@example.com
 </p>
+
+<p>
+Google Scholar:
+<a href="#">
+Add Link
+</a>
+</p>
+
+<p>
+ORCID:
+<a href="#">
+Add Link
+</a>
+</p>
+
+<p>
+GitHub:
+<a href="https://github.com/pranavtv">
+github.com/pranavtv
+</a>
+</p>
+
+<p>
+LinkedIn:
+<a href="#">
+Add Link
+</a>
+</p>
+
+</section>
+
 </div>
+
+<footer>
+
+<p>
+© 2025 Pranav T V
+</p>
+
+</footer>
 
 </body>
 </html>
