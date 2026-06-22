@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Finite Mixture Models: From Intuition to Gaussian Mixture Models</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+  /* ─── Design Tokens ─── */
+  :root {
+    --ink:        #1a1a2e;
+    --ink-light:  #4a4a6a;
+    --ink-muted:  #8888aa;
+    --paper:      #ffffff;
+    --paper-warm: #f9f8ff;
+    --accent:     #5b4fcf;
+    --accent-soft:#ede9ff;
+    --accent2:    #e8456a;
+    --accent2-soft:#fdeef2;
+    --accent3:    #18a999;
+    --accent3-soft:#e6f7f5;
+    --border:     #e8e8f0;
+    --reading-width: 720px;
+    --font-serif: 'Lora', Georgia, serif;
+    --font-sans:  'Inter', system-ui, sans-serif;
+    --font-mono:  'JetBrains Mono', monospace;
+  }
+
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 18px; }
+  body {
+    font-family: var(--font-serif);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── Layout ─── */
+  .container {
+    max-width: var(--reading-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ─── Nav / Back link ─── */
+  .top-nav {
+    padding: 24px 0 0;
+    font-family: var(--font-sans);
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    transition: opacity .2s;
+  }
+  .back-link:hover { opacity: .7; }
+
+  /* ─── Header ─── */
+  .article-header { padding: 40px 0 32px; }
+  .category-tag {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+  .article-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+    margin-bottom: 0;
+  }
+  .article-meta .author { color: var(--ink-light); font-weight: 500; }
+  .meta-sep { color: var(--border); }
+
+  /* ─── Cover Illustration ─── */
+  .cover-figure {
+    margin: 36px 0 48px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f0eeff 0%, #e8f7f5 100%);
+    padding: 8px;
+  }
+  .cover-figure svg { display: block; width: 100%; }
+  .cover-caption {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* ─── Article Body ─── */
+  .article-body { padding-bottom: 80px; }
+
+  .article-body p {
+    margin-bottom: 1.4em;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+  /* ─── Section Headings ─── */
+  .section-label {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    margin-top: 60px;
+  }
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+  }
+  h3 {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 32px 0 12px;
+  }
+
+  /* ─── Equations ─── */
+  .eq-block {
+    background: var(--paper-warm);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 16px 20px;
+    margin: 24px 0;
+    overflow-x: auto;
+    font-size: 1.05rem;
+  }
+
+  /* ─── Callout Boxes ─── */
+  .callout {
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 28px 0;
+    position: relative;
+  }
+  .callout-label {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .callout-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+  }
+  .callout p { margin-bottom: 0; font-size: 0.95rem; }
+
+  .callout.intuition {
+    background: var(--accent-soft);
+    border: 1px solid #d4ccff;
+  }
+  .callout.intuition .callout-label { color: var(--accent); }
+  .callout.intuition .callout-label::before { background: var(--accent); }
+
+  .callout.key-idea {
+    background: var(--accent2-soft);
+    border: 1px solid #f4c0ce;
+  }
+  .callout.key-idea .callout-label { color: var(--accent2); }
+  .callout.key-idea .callout-label::before { background: var(--accent2); }
+
+  .callout.research-insight {
+    background: var(--accent3-soft);
+    border: 1px solid #a8ddd9;
+  }
+  .callout.research-insight .callout-label { color: var(--accent3); }
+  .callout.research-insight .callout-label::before { background: var(--accent3); }
+
+  /* ─── Figures ─── */
+  figure {
+    margin: 36px 0;
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    overflow: hidden;
+  }
+  figure svg { display: block; width: 100%; }
+  figcaption {
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    color: var(--ink-muted);
+    margin-top: 12px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  /* ─── Application Cards ─── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 14px;
+    margin: 28px 0;
+  }
+  .app-card {
+    background: var(--paper-warm);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .app-card .icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .app-card h4 {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .app-card p {
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* ─── Comparison Table ─── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.84rem;
+  }
+  th {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-light);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--paper-warm); }
+
+  /* ─── EM Flowchart steps ─── */
+  .em-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 28px 0;
+  }
+  .em-step {
+    background: var(--accent-soft);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 12px 18px;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 110px;
+  }
+  .em-arrow {
+    font-size: 1.4rem;
+    color: var(--accent);
+    padding: 0 6px;
+  }
+
+  /* ─── Author Note ─── */
+  .author-note {
+    margin-top: 64px;
+    padding: 28px 32px;
+    background: linear-gradient(135deg, var(--accent-soft), var(--accent3-soft));
+    border-radius: 16px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .author-avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    color: #fff;
+    font-family: var(--font-serif);
+    font-weight: 700;
+  }
+  .author-note-text h4 {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .author-note-text p {
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--ink-light);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  /* ─── Divider ─── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0;
+  }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 600px) {
+    html { font-size: 16px; }
+    .author-note { flex-direction: column; }
+    .em-steps { flex-direction: column; }
+    .em-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Back link -->
+  <nav class="top-nav">
+    <a class="back-link" href="/blog">← Back to Blog</a>
+  </nav>
+
+  <!-- Header -->
+  <header class="article-header">
+    <span class="category-tag">Statistics · Machine Learning</span>
+    <h1 class="article-title">Finite Mixture Models: From Intuition to Gaussian Mixture Models</h1>
+    <div class="article-meta">
+      <span class="author">Pranav T V</span>
+      <span class="meta-sep">|</span>
+      <span>PhD Scholar in Statistics, Pondicherry University</span>
+      <span class="meta-sep">|</span>
+      <span>June 2025</span>
+      <span class="meta-sep">|</span>
+      <span>⏱ 22 min read</span>
+    </div>
+  </header>
+
+  <!-- Cover SVG -->
+  <div class="cover-figure">
+    <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" aria-label="Cover: overlapping Gaussian mixture illustration">
+      <defs>
+        <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#f0eeff"/>
+          <stop offset="100%" stop-color="#e8f7f5"/>
+        </linearGradient>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#5b4fcf" stop-opacity="0.85"/>
+          <stop offset="100%" stop-color="#5b4fcf" stop-opacity="0.1"/>
+        </linearGradient>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#e8456a" stop-opacity="0.75"/>
+          <stop offset="100%" stop-color="#e8456a" stop-opacity="0.1"/>
+        </linearGradient>
+        <linearGradient id="g3" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#18a999" stop-opacity="0.65"/>
+          <stop offset="100%" stop-color="#18a999" stop-opacity="0.1"/>
+        </linearGradient>
+      </defs>
+      <rect width="720" height="260" fill="url(#bgGrad)" rx="12"/>
+
+      <!-- Grid lines -->
+      <line x1="60" y1="200" x2="660" y2="200" stroke="#c8c8e8" stroke-width="1"/>
+      <line x1="60" y1="160" x2="660" y2="160" stroke="#e8e8f4" stroke-width="0.5"/>
+      <line x1="60" y1="120" x2="660" y2="120" stroke="#e8e8f4" stroke-width="0.5"/>
+      <line x1="60" y1="80"  x2="660" y2="80"  stroke="#e8e8f4" stroke-width="0.5"/>
+      <line x1="60" y1="40"  x2="660" y2="40"  stroke="#e8e8f4" stroke-width="0.5"/>
+
+      <!-- Component 1: purple, mu=250 -->
+      <path d="M60,200 C80,200 120,198 160,192 C200,186 230,160 250,110 C270,60 280,35 290,28 C300,35 310,60 330,110 C350,160 380,186 420,192 C460,198 500,200 540,200 Z" fill="url(#g1)" opacity="0.7"/>
+      <path d="M60,200 C80,200 120,198 160,192 C200,186 230,160 250,110 C270,60 280,35 290,28 C300,35 310,60 330,110 C350,160 380,186 420,192 C460,198 500,200 540,200" fill="none" stroke="#5b4fcf" stroke-width="2.2"/>
+
+      <!-- Component 2: red, mu=430 -->
+      <path d="M240,200 C270,200 310,198 350,192 C390,185 420,155 440,112 C460,68 465,42 475,30 C485,42 490,68 510,112 C530,155 560,185 600,192 C630,198 650,200 660,200 Z" fill="url(#g2)" opacity="0.6"/>
+      <path d="M240,200 C270,200 310,198 350,192 C390,185 420,155 440,112 C460,68 465,42 475,30 C485,42 490,68 510,112 C530,155 560,185 600,192 C630,198 650,200 660,200" fill="none" stroke="#e8456a" stroke-width="2.2"/>
+
+      <!-- Combined mixture curve (teal) -->
+      <path d="M60,200 C80,200 120,198 155,193 C190,188 215,170 240,148 C260,128 270,105 290,75 C300,55 305,42 315,48 C330,60 345,95 365,130 C385,165 405,178 435,152 C455,130 463,100 475,68 C485,50 490,40 498,46 C510,60 520,95 540,135 C560,168 590,188 630,195 C650,198 660,200 660,200" fill="none" stroke="#18a999" stroke-width="2.8" stroke-dasharray="6,3"/>
+
+      <!-- Legend -->
+      <circle cx="90" cy="226" r="5" fill="#5b4fcf"/>
+      <text x="100" y="230" font-family="Inter,sans-serif" font-size="11" fill="#5b4fcf" font-weight="600">Component 1 (π₁=0.45)</text>
+      <circle cx="270" cy="226" r="5" fill="#e8456a"/>
+      <text x="280" y="230" font-family="Inter,sans-serif" font-size="11" fill="#e8456a" font-weight="600">Component 2 (π₂=0.55)</text>
+      <line x1="450" y1="226" x2="468" y2="226" stroke="#18a999" stroke-width="2.5" stroke-dasharray="5,2"/>
+      <text x="474" y="230" font-family="Inter,sans-serif" font-size="11" fill="#18a999" font-weight="600">Mixture f(x)</text>
+    </svg>
+    <p class="cover-caption">Two Gaussian components (purple, red) combined into a single bimodal mixture distribution (teal dashed). This is the heart of a Finite Mixture Model.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════ ARTICLE ═══════════════════════════════════ -->
+  <article class="article-body">
+
+    <!-- §1 Introduction -->
+    <span class="section-label">Section 01</span>
+    <h2>The Problem with One-Size-Fits-All Distributions</h2>
+
+    <p>Picture yourself standing at the entrance of a large university campus on a Monday morning. You decide to record the heights of everyone who walks through the gate. By the end of the day, you have thousands of measurements. You fire up your statistics software, fit a single normal distribution to the data, and step back to admire your work.</p>
+
+    <p>But something looks off. The bell curve you fitted is oddly wide. The peak sits at around 168 cm — but when you look more carefully, you see the data has <em>two subtle humps</em>. There is a cluster around 163 cm and another around 177 cm. A single normal distribution is trying to be two things at once, and failing at both.</p>
+
+    <p>What you are witnessing is <strong>heterogeneity</strong> — the data is not coming from one homogeneous population. It comes from two groups (broadly: female and male students), each with their own average height and spread. When we force a single distribution onto this data, we hide the very structure that makes it interesting.</p>
+
+    <div class="callout intuition">
+      <div class="callout-label">Intuition</div>
+      <p>Whenever your data comes from multiple "types" of individuals, processes, or subpopulations — and you do not know which type each observation belongs to — you are dealing with a <em>mixture</em>. A single distribution will almost certainly give you a distorted picture of reality.</p>
+    </div>
+
+    <p>This is not an isolated academic problem. The same situation appears everywhere: household incomes follow radically different patterns for different socioeconomic groups; insurance claims look very different for young versus experienced drivers; gene expression data contains sick and healthy patients; customer spending habits cluster into "budget shoppers" and "premium buyers." The list goes on endlessly.</p>
+
+    <p>Finite Mixture Models are the statistical tool built precisely for these situations. They let us model data that is secretly generated by several distinct subpopulations, without requiring us to know in advance which observation belongs to which group. In this article, we will build the intuition behind these models from the ground up, before focusing on the most widely used special case: the Gaussian Mixture Model (GMM).</p>
+
+    <hr class="divider" />
+
+    <!-- §2 Central Idea -->
+    <span class="section-label">Section 02</span>
+    <h2>The Central Idea: One Dataset, Many Generators</h2>
+
+    <p>Let us think carefully about where data comes from. In classical statistics, we assume our observations are independently drawn from a single probability distribution. But real-world data generators are often messier — they are hidden mixtures.</p>
+
+    <p>Consider these scenarios:</p>
+    <ul style="margin: 0 0 1.4em 1.6em; line-height: 1.9;">
+      <li><strong>Heights at a university</strong> — generated by male and female subpopulations.</li>
+      <li><strong>Medical test results</strong> — generated by healthy and diseased patients.</li>
+      <li><strong>Supermarket spending</strong> — generated by budget, mid-range, and premium shoppers.</li>
+      <li><strong>Daily stock returns</strong> — generated by "calm" and "volatile" market regimes.</li>
+    </ul>
+
+    <p>In each case, there exist <em>latent groups</em> — groups that are real and influence the data, but are not labeled or observed. A finite mixture model says: "I accept that this data is a cocktail of several distributions. Let me model all of them simultaneously, along with the proportions in which they contribute."</p>
+
+    <div class="callout key-idea">
+      <div class="callout-label">Key Idea</div>
+      <p>A <strong>finite mixture model</strong> assumes the data-generating process randomly selects a hidden "component" (subpopulation) first, then generates an observation from that component's distribution. The observed data is the result — with no label telling you which component was responsible.</p>
+    </div>
+
+    <!-- Two overlapping bells SVG -->
+    <figure>
+      <svg viewBox="0 0 680 280" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="280" fill="#f9f8ff" rx="8"/>
+        <!-- Axes -->
+        <line x1="50" y1="240" x2="630" y2="240" stroke="#c8c8e8" stroke-width="1.5"/>
+        <line x1="50" y1="30" x2="50" y2="240" stroke="#c8c8e8" stroke-width="1.5"/>
+        <text x="340" y="268" font-family="Inter,sans-serif" font-size="12" fill="#8888aa" text-anchor="middle">x (observed measurement)</text>
+        <text x="16" y="140" font-family="Inter,sans-serif" font-size="12" fill="#8888aa" text-anchor="middle" transform="rotate(-90,16,140)">Density</text>
+
+        <!-- Component 1 shaded: μ=220, narrow -->
+        <path d="M80,240 C100,240 130,238 160,230 C190,222 200,200 215,170 C228,142 230,90 235,55 C240,90 242,142 255,170 C270,200 280,222 310,230 C340,238 370,240 390,240 Z" fill="#5b4fcf" fill-opacity="0.18"/>
+        <path d="M80,240 C100,240 130,238 160,230 C190,222 200,200 215,170 C228,142 230,90 235,55 C240,90 242,142 255,170 C270,200 280,222 310,230 C340,238 370,240 390,240" fill="none" stroke="#5b4fcf" stroke-width="2.5"/>
+        <text x="235" y="48" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf" text-anchor="middle" font-weight="600">μ₁, σ₁</text>
+
+        <!-- Component 2 shaded: μ=420, wider -->
+        <path d="M290,240 C320,240 360,237 400,225 C440,213 460,186 480,150 C495,118 500,90 510,65 C520,90 525,118 540,150 C560,186 580,213 620,225 C650,237 670,240 680,240 Z" fill="#e8456a" fill-opacity="0.15"/>
+        <path d="M290,240 C320,240 360,237 400,225 C440,213 460,186 480,150 C495,118 500,90 510,65 C520,90 525,118 540,150 C560,186 580,213 620,225 C650,237 670,240 680,240" fill="none" stroke="#e8456a" stroke-width="2.5"/>
+        <text x="510" y="58" font-family="Inter,sans-serif" font-size="10" fill="#e8456a" text-anchor="middle" font-weight="600">μ₂, σ₂</text>
+
+        <!-- Overlap region indicator -->
+        <text x="340" y="215" font-family="Inter,sans-serif" font-size="10" fill="#9988bb" text-anchor="middle" font-style="italic">overlap zone</text>
+
+        <!-- Legend -->
+        <rect x="55" y="35" width="12" height="4" fill="#5b4fcf" rx="2"/>
+        <text x="72" y="41" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf">Subpopulation 1</text>
+        <rect x="55" y="50" width="12" height="4" fill="#e8456a" rx="2"/>
+        <text x="72" y="56" font-family="Inter,sans-serif" font-size="10" fill="#e8456a">Subpopulation 2</text>
+      </svg>
+      <figcaption><strong>Figure 1.</strong> Two Gaussian distributions representing two hidden subpopulations. Observations in the overlap zone are ambiguous — they could plausibly come from either component. This ambiguity is what makes mixture models both challenging and interesting.</figcaption>
+    </figure>
+
+    <hr class="divider" />
+
+    <!-- §3 Mathematical Definition -->
+    <span class="section-label">Section 03</span>
+    <h2>What Is a Finite Mixture Model?</h2>
+
+    <p>Now that we have the intuition, let us write it down mathematically. A <strong>finite mixture model</strong> says that the probability density (or mass) of an observation $x$ is a weighted sum of $K$ component densities:</p>
+
+    <div class="eq-block">
+      $$f(x) = \sum_{k=1}^{K} \pi_k \, f_k(x \mid \theta_k)$$
+    </div>
+
+    <p>Let us unpack every single piece of this expression:</p>
+    <ul style="margin: 0 0 1.4em 1.6em; line-height: 2.0;">
+      <li>$K$ is the total number of components (hidden subpopulations). This is a <em>finite</em> number — hence "finite mixture."</li>
+      <li>$f_k(x \mid \theta_k)$ is the density of the $k$-th component, parameterized by $\theta_k$ (e.g., mean and variance for a Gaussian).</li>
+      <li>$\pi_k$ is the <em>mixing proportion</em> (or mixing weight) for component $k$ — it tells you how likely it is that a randomly chosen observation came from that component.</li>
+    </ul>
+
+    <p>The mixing proportions must satisfy two constraints: each must be non-negative ($\pi_k \geq 0$), and they must all sum to one ($\sum_{k=1}^{K} \pi_k = 1$). This makes them a proper probability distribution over the components.</p>
+
+    <!-- Flow diagram -->
+    <figure>
+      <svg viewBox="0 0 680 160" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="160" fill="#f9f8ff" rx="8"/>
+
+        <!-- Box 1 -->
+        <rect x="30" y="55" width="130" height="50" rx="10" fill="#5b4fcf" fill-opacity="0.15" stroke="#5b4fcf" stroke-width="1.8"/>
+        <text x="95" y="76" font-family="Inter,sans-serif" font-size="11" fill="#5b4fcf" text-anchor="middle" font-weight="700">Hidden Group Z</text>
+        <text x="95" y="92" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf" text-anchor="middle">(chosen with prob πₖ)</text>
+
+        <!-- Arrow -->
+        <path d="M160,80 L210,80" stroke="#5b4fcf" stroke-width="2" marker-end="url(#arrow1)"/>
+        <defs><marker id="arrow1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#5b4fcf"/></marker></defs>
+
+        <!-- Box 2 -->
+        <rect x="210" y="55" width="160" height="50" rx="10" fill="#e8456a" fill-opacity="0.12" stroke="#e8456a" stroke-width="1.8"/>
+        <text x="290" y="76" font-family="Inter,sans-serif" font-size="11" fill="#e8456a" text-anchor="middle" font-weight="700">Component Distribution</text>
+        <text x="290" y="92" font-family="Inter,sans-serif" font-size="10" fill="#e8456a" text-anchor="middle">fₖ(x | θₖ)</text>
+
+        <!-- Arrow -->
+        <path d="M370,80 L420,80" stroke="#e8456a" stroke-width="2" marker-end="url(#arrow2)"/>
+        <defs><marker id="arrow2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#e8456a"/></marker></defs>
+
+        <!-- Box 3 -->
+        <rect x="420" y="55" width="130" height="50" rx="10" fill="#18a999" fill-opacity="0.13" stroke="#18a999" stroke-width="1.8"/>
+        <text x="485" y="76" font-family="Inter,sans-serif" font-size="11" fill="#18a999" text-anchor="middle" font-weight="700">Observation x</text>
+        <text x="485" y="92" font-family="Inter,sans-serif" font-size="10" fill="#18a999" text-anchor="middle">(what we see)</text>
+
+        <!-- Arrow from mixture sum -->
+        <text x="340" y="148" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle" font-style="italic">f(x) = Σ πₖ fₖ(x|θₖ)  ← the marginal we actually observe</text>
+      </svg>
+      <figcaption><strong>Figure 2.</strong> The generative process of a mixture model. A hidden component $Z$ is first selected with probability $\pi_k$; then an observation is drawn from that component's distribution. We only ever see the final observation $x$.</figcaption>
+    </figure>
+
+    <hr class="divider" />
+
+    <!-- §4 Mixing Proportions -->
+    <span class="section-label">Section 04</span>
+    <h2>Understanding the Mixing Proportions</h2>
+
+    <p>The $\pi_k$ values are the soul of a mixture model. Think of them as telling you: "Out of every 100 observations in this dataset, roughly $100 \times \pi_k$ of them came from subpopulation $k$."</p>
+
+    <p>If you were modelling a university campus with 60% female and 40% male students, your height mixture might look like: $\pi_1 = 0.60$ (female component) and $\pi_2 = 0.40$ (male component). These proportions encode the <em>prevalence</em> of each subpopulation in your dataset.</p>
+
+    <div class="callout intuition">
+      <div class="callout-label">Intuition</div>
+      <p>Mixing proportions are like the recipe fractions for a smoothie. If your smoothie is 70% mango and 30% strawberry, then most of what you taste is mango — but the strawberry is still there. Similarly, $\pi_k$ tells you how much each component "flavours" the final mixture distribution.</p>
+    </div>
+
+    <!-- Pie SVG -->
+    <figure>
+      <svg viewBox="0 0 400 230" xmlns="http://www.w3.org/2000/svg">
+        <rect width="400" height="230" fill="#f9f8ff" rx="8"/>
+        <!-- Pie: 3 components. Using pre-computed arcs for K=3: π1=0.45 (162°), π2=0.35 (126°), π3=0.20 (72°) -->
+        <!-- Component 1: 0 to 162 degrees -->
+        <path d="M200,115 L200,35 A80,80 0 0,1 275,155 Z" fill="#5b4fcf" fill-opacity="0.85"/>
+        <!-- Component 2: 162 to 288 -->
+        <path d="M200,115 L275,155 A80,80 0 0,1 120,155 Z" fill="#e8456a" fill-opacity="0.80"/>
+        <!-- Component 3: 288 to 360 -->
+        <path d="M200,115 L120,155 A80,80 0 0,1 200,35 Z" fill="#18a999" fill-opacity="0.80"/>
+        <!-- Labels -->
+        <text x="225" y="90" font-family="Inter,sans-serif" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">π₁=0.45</text>
+        <text x="220" y="170" font-family="Inter,sans-serif" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">π₂=0.35</text>
+        <text x="155" y="102" font-family="Inter,sans-serif" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">π₃=0.20</text>
+        <!-- Legend -->
+        <circle cx="290" cy="80" r="7" fill="#5b4fcf"/>
+        <text x="302" y="84" font-family="Inter,sans-serif" font-size="11" fill="#4a4a6a">Component 1 (45%)</text>
+        <circle cx="290" cy="102" r="7" fill="#e8456a"/>
+        <text x="302" y="106" font-family="Inter,sans-serif" font-size="11" fill="#4a4a6a">Component 2 (35%)</text>
+        <circle cx="290" cy="124" r="7" fill="#18a999"/>
+        <text x="302" y="128" font-family="Inter,sans-serif" font-size="11" fill="#4a4a6a">Component 3 (20%)</text>
+        <text x="200" y="215" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">π₁ + π₂ + π₃ = 0.45 + 0.35 + 0.20 = 1.0</text>
+      </svg>
+      <figcaption><strong>Figure 3.</strong> Mixing proportions for a three-component mixture model. They must always sum to exactly 1, since they represent probabilities of component membership.</figcaption>
+    </figure>
+
+    <hr class="divider" />
+
+    <!-- §5 GMM -->
+    <span class="section-label">Section 05 — Main Focus</span>
+    <h2>Gaussian Mixture Models</h2>
+
+    <h3>First, what is a Gaussian distribution?</h3>
+    <p>Before diving into mixtures of Gaussians, let us make sure the ingredient is perfectly clear. A <strong>Gaussian (Normal) distribution</strong> is the classic bell curve. It is completely characterized by two numbers: the <em>mean</em> $\mu$ (where the peak sits) and the <em>variance</em> $\sigma^2$ (how spread out the bell is). Its density is:</p>
+
+    <div class="eq-block">
+      $$\mathcal{N}(x \mid \mu, \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left(-\frac{(x-\mu)^2}{2\sigma^2}\right)$$
+    </div>
+
+    <h3>The Gaussian Mixture Model (GMM)</h3>
+    <p>A <strong>Gaussian Mixture Model</strong> simply plugs Gaussian densities into the finite mixture formula. For $K$ components, the mixture density is:</p>
+
+    <div class="eq-block">
+      $$f(x) = \sum_{k=1}^{K} \pi_k \, \mathcal{N}(x \mid \mu_k, \sigma_k^2)$$
+    </div>
+
+    <p>So a GMM is parameterized by three sets of quantities: the means $\{\mu_k\}$, the variances $\{\sigma_k^2\}$, and the mixing proportions $\{\pi_k\}$. Together, these parameters describe the shape, location, spread, and weight of each Gaussian component. Learning these parameters from data is the central challenge of GMM fitting.</p>
+
+    <div class="callout key-idea">
+      <div class="callout-label">Key Idea</div>
+      <p>A GMM is incredibly flexible. By choosing enough components and tuning their means, variances, and weights, a GMM can approximate <em>any</em> continuous probability distribution to arbitrary accuracy. This is what makes it such a powerful tool.</p>
+    </div>
+
+    <!-- Graph 1: Single Gaussian -->
+    <figure>
+      <svg viewBox="0 0 680 210" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="210" fill="#f9f8ff" rx="8"/>
+        <line x1="50" y1="180" x2="630" y2="180" stroke="#c8c8e8" stroke-width="1.5"/>
+        <line x1="50" y1="20" x2="50" y2="180" stroke="#c8c8e8" stroke-width="1.5"/>
+        <text x="340" y="198" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">x</text>
+        <text x="16" y="100" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle" transform="rotate(-90,16,100)">f(x)</text>
+        <!-- Single Gaussian: mu=340, sigma=70 (approx) -->
+        <path d="M50,180 C80,180 120,179 160,176 C200,173 240,165 280,148 C310,133 325,110 340,72 C355,110 370,133 400,148 C440,165 480,173 520,176 C560,179 600,180 630,180 Z" fill="#5b4fcf" fill-opacity="0.18"/>
+        <path d="M50,180 C80,180 120,179 160,176 C200,173 240,165 280,148 C310,133 325,110 340,72 C355,110 370,133 400,148 C440,165 480,173 520,176 C560,179 600,180 630,180" fill="none" stroke="#5b4fcf" stroke-width="2.5"/>
+        <!-- mu line -->
+        <line x1="340" y1="72" x2="340" y2="180" stroke="#5b4fcf" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="340" y="65" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf" text-anchor="middle">μ</text>
+        <!-- sigma arrows -->
+        <line x1="340" y1="142" x2="410" y2="142" stroke="#8888aa" stroke-width="1" marker-end="url(#sig)"/>
+        <defs><marker id="sig" markerWidth="6" markerHeight="6" refX="5" refY="2" orient="auto"><path d="M0,0 L0,4 L6,2 Z" fill="#8888aa"/></marker></defs>
+        <text x="380" y="138" font-family="Inter,sans-serif" font-size="9" fill="#8888aa">σ</text>
+        <text x="340" y="25" font-family="Inter,sans-serif" font-size="11" fill="#5b4fcf" text-anchor="middle" font-weight="600">Single Gaussian  𝒩(μ, σ²)</text>
+      </svg>
+      <figcaption><strong>Figure 4.</strong> A single Gaussian distribution — perfectly symmetric, unimodal. It captures one well-defined cluster of data.</figcaption>
+    </figure>
+
+    <!-- Graph 2: Two Gaussian Components + Mixture -->
+    <figure>
+      <svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="230" fill="#f9f8ff" rx="8"/>
+        <line x1="50" y1="195" x2="630" y2="195" stroke="#c8c8e8" stroke-width="1.5"/>
+        <line x1="50" y1="20" x2="50" y2="195" stroke="#c8c8e8" stroke-width="1.5"/>
+        <text x="340" y="215" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">x</text>
+
+        <!-- Component 1: mu≈220 -->
+        <path d="M60,195 C90,195 130,193 170,186 C205,179 218,162 232,137 C243,115 245,82 250,55 C255,82 257,115 268,137 C282,162 295,179 330,186 C370,193 410,195 440,195 Z" fill="#5b4fcf" fill-opacity="0.18"/>
+        <path d="M60,195 C90,195 130,193 170,186 C205,179 218,162 232,137 C243,115 245,82 250,55 C255,82 257,115 268,137 C282,162 295,179 330,186 C370,193 410,195 440,195" fill="none" stroke="#5b4fcf" stroke-width="2"/>
+        <text x="250" y="48" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf" text-anchor="middle" font-weight="600">π₁𝒩(μ₁,σ₁²)</text>
+
+        <!-- Component 2: mu≈460 -->
+        <path d="M320,195 C360,195 400,192 430,180 C460,168 472,148 485,122 C494,100 498,78 505,55 C512,78 516,100 525,122 C538,148 550,168 580,180 C610,192 640,195 660,195 Z" fill="#e8456a" fill-opacity="0.15"/>
+        <path d="M320,195 C360,195 400,192 430,180 C460,168 472,148 485,122 C494,100 498,78 505,55 C512,78 516,100 525,122 C538,148 550,168 580,180 C610,192 640,195 660,195" fill="none" stroke="#e8456a" stroke-width="2"/>
+        <text x="505" y="48" font-family="Inter,sans-serif" font-size="10" fill="#e8456a" text-anchor="middle" font-weight="600">π₂𝒩(μ₂,σ₂²)</text>
+
+        <!-- Mixture curve -->
+        <path d="M60,195 C90,195 130,193 160,186 C195,179 220,163 240,140 C256,118 252,88 263,70 C272,53 262,60 265,70 C270,84 275,120 300,148 C325,175 360,185 405,170 C435,158 456,135 475,108 C490,84 498,62 508,48 C518,62 526,84 538,108 C555,135 575,158 600,170 C625,180 645,192 660,195" fill="none" stroke="#18a999" stroke-width="2.8" stroke-dasharray="7,3"/>
+
+        <!-- Legend -->
+        <rect x="55" y="20" width="10" height="4" fill="#5b4fcf" rx="1"/>
+        <text x="70" y="26" font-family="Inter,sans-serif" font-size="9" fill="#5b4fcf">Component 1</text>
+        <rect x="140" y="20" width="10" height="4" fill="#e8456a" rx="1"/>
+        <text x="155" y="26" font-family="Inter,sans-serif" font-size="9" fill="#e8456a">Component 2</text>
+        <line x1="225" y1="22" x2="237" y2="22" stroke="#18a999" stroke-width="2.5" stroke-dasharray="5,2"/>
+        <text x="242" y="26" font-family="Inter,sans-serif" font-size="9" fill="#18a999">Mixture f(x)</text>
+      </svg>
+      <figcaption><strong>Figure 5.</strong> Two Gaussian components (purple and red) and their mixture (teal dashed). The mixture density inherits contributions from both, producing a bimodal shape when the components are sufficiently separated.</figcaption>
+    </figure>
+
+    <!-- Graph 3: Well-separated vs overlapping -->
+    <figure>
+      <svg viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="260" fill="#f9f8ff" rx="8"/>
+
+        <!-- Left panel: well-separated -->
+        <text x="170" y="22" font-family="Inter,sans-serif" font-size="11" fill="#4a4a6a" text-anchor="middle" font-weight="600">Well-separated components</text>
+        <line x1="20" y1="200" x2="320" y2="200" stroke="#c8c8e8" stroke-width="1.2"/>
+        <!-- C1 left -->
+        <path d="M20,200 C40,200 70,198 95,190 C115,183 118,165 122,148 C126,130 127,100 130,75 C133,100 134,130 138,148 C142,165 145,183 165,190 C190,198 220,200 240,200 Z" fill="#5b4fcf" fill-opacity="0.25"/>
+        <path d="M20,200 C40,200 70,198 95,190 C115,183 118,165 122,148 C126,130 127,100 130,75 C133,100 134,130 138,148 C142,165 145,183 165,190 C190,198 220,200 240,200" fill="none" stroke="#5b4fcf" stroke-width="2"/>
+        <!-- C2 left (well separated) -->
+        <path d="M210,200 C230,200 255,198 275,188 C293,178 296,160 300,140 C303,122 304,100 307,78 C310,100 311,122 314,140 C318,160 321,178 339,188 C359,198 380,200 400,200 Z" fill="#e8456a" fill-opacity="0.22"/>
+        <path d="M210,200 C230,200 255,198 275,188 C293,178 296,160 300,140 C303,122 304,100 307,78 C310,100 311,122 314,140 C318,160 321,178 339,188 C359,198 380,200 400,200" fill="none" stroke="#e8456a" stroke-width="2"/>
+        <!-- Mixture left -->
+        <path d="M20,200 C40,200 70,198 95,190 C113,183 120,163 128,140 C132,122 130,95 133,80 C136,95 138,122 142,140 C148,163 158,183 178,190 C205,198 238,200 258,196 C275,193 283,190 300,170 C305,155 307,130 311,105 C315,130 317,155 322,170 C332,190 345,196 365,198 C385,200 400,200 400,200" fill="none" stroke="#18a999" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+        <!-- Divider -->
+        <line x1="340" y1="15" x2="340" y2="245" stroke="#e8e8f0" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+        <!-- Right panel: overlapping -->
+        <text x="510" y="22" font-family="Inter,sans-serif" font-size="11" fill="#4a4a6a" text-anchor="middle" font-weight="600">Overlapping components</text>
+        <line x1="360" y1="200" x2="660" y2="200" stroke="#c8c8e8" stroke-width="1.2"/>
+        <!-- C1 right: mu≈450 -->
+        <path d="M360,200 C380,200 410,198 440,188 C465,178 472,155 478,130 C483,108 484,80 490,55 C496,80 497,108 502,130 C508,155 515,178 540,188 C570,198 600,200 630,200 Z" fill="#5b4fcf" fill-opacity="0.20"/>
+        <path d="M360,200 C380,200 410,198 440,188 C465,178 472,155 478,130 C483,108 484,80 490,55 C496,80 497,108 502,130 C508,155 515,178 540,188 C570,198 600,200 630,200" fill="none" stroke="#5b4fcf" stroke-width="2"/>
+        <!-- C2 right: mu≈530, overlapping -->
+        <path d="M400,200 C420,200 445,198 465,188 C488,177 498,155 508,132 C516,110 518,85 525,60 C532,85 534,110 542,132 C552,155 562,177 585,188 C605,198 630,200 660,200 Z" fill="#e8456a" fill-opacity="0.18"/>
+        <path d="M400,200 C420,200 445,198 465,188 C488,177 498,155 508,132 C516,110 518,85 525,60 C532,85 534,110 542,132 C552,155 562,177 585,188 C605,198 630,200 660,200" fill="none" stroke="#e8456a" stroke-width="2"/>
+        <!-- Mixture right -->
+        <path d="M360,200 C380,200 410,198 436,185 C460,172 472,148 480,120 C487,96 485,68 490,45 C495,60 498,80 505,105 C512,130 518,152 528,168 C538,183 548,192 565,195 C584,198 610,200 660,200" fill="none" stroke="#18a999" stroke-width="2.5" stroke-dasharray="6,3"/>
+
+        <text x="340" y="248" font-family="Inter,sans-serif" font-size="9" fill="#8888aa" text-anchor="middle" font-style="italic">Left: clear bimodal. Right: unimodal mixture — harder to separate.</text>
+      </svg>
+      <figcaption><strong>Figure 6.</strong> Left: well-separated components produce a clearly bimodal mixture — the two groups are easy to distinguish. Right: strongly overlapping components blend into a nearly unimodal mixture — the hidden structure is harder to recover.</figcaption>
+    </figure>
+
+    <hr class="divider" />
+
+    <!-- §6 Why GMMs are Powerful -->
+    <span class="section-label">Section 06</span>
+    <h2>Why GMMs Are So Powerful</h2>
+
+    <p>Gaussian Mixture Models have earned a central place in statistics and machine learning not by accident, but because they sit at the intersection of mathematical elegance and practical versatility. Here are some of the domains where GMMs genuinely shine:</p>
+
+    <div class="cards-grid">
+      <div class="app-card"><div class="icon">🔵</div><h4>Soft Clustering</h4><p>GMMs assign each data point a <em>probability</em> of belonging to each cluster — richer than hard k-means assignment.</p></div>
+      <div class="app-card"><div class="icon">🗣️</div><h4>Speech Recognition</h4><p>Hidden Markov Models paired with GMMs have been the backbone of speech systems for decades.</p></div>
+      <div class="app-card"><div class="icon">🖼️</div><h4>Image Segmentation</h4><p>Pixel intensities are modelled as a mixture; each component corresponds to a different region or texture.</p></div>
+      <div class="app-card"><div class="icon">🧬</div><h4>Bioinformatics</h4><p>Gene expression data often comes from multiple cell types or disease subtypes — perfect for GMMs.</p></div>
+      <div class="app-card"><div class="icon">💳</div><h4>Anomaly Detection</h4><p>Points with very low mixture density under the fitted GMM are flagged as anomalies or outliers.</p></div>
+      <div class="app-card"><div class="icon">🛒</div><h4>Market Segmentation</h4><p>Customer spending, browsing, and demographics naturally cluster into latent market segments.</p></div>
+      <div class="app-card"><div class="icon">📊</div><h4>Density Estimation</h4><p>A GMM with enough components approximates any smooth density — a universal density estimator.</p></div>
+      <div class="app-card"><div class="icon">🧠</div><h4>Generative AI</h4><p>GMMs underpin variational ideas in deep generative models and normalizing flows.</p></div>
+    </div>
+
+    <div class="callout research-insight">
+      <div class="callout-label">Research Insight</div>
+      <p>The theoretical result that a finite mixture of Gaussians is <em>dense</em> in the space of all continuous densities (under weak regularity conditions) means that GMMs are not just a convenient approximation — they are, in a formal sense, a universal class of models for continuous data.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §7 Latent Variables -->
+    <span class="section-label">Section 07</span>
+    <h2>Latent Variables: The Hidden Labels</h2>
+
+    <p>At the heart of every mixture model is a variable we never get to see. We call it the <strong>latent variable</strong>, and statisticians usually denote it $Z$. For an observation $x_i$, the corresponding $Z_i$ tells you which component generated it:</p>
+
+    <div class="eq-block">
+      $$Z_i \in \{1, 2, \ldots, K\}, \quad P(Z_i = k) = \pi_k$$
+    </div>
+
+    <p>So $Z_i$ is like a hidden label — "this data point was generated by component 3." But crucially, we never observe $Z_i$. All we see is $x_i$. This is what makes mixture models tricky: we are trying to reverse-engineer the generating mechanism from incomplete information.</p>
+
+    <div class="callout intuition">
+      <div class="callout-label">Intuition</div>
+      <p>Imagine a factory that makes parts on two machines. Each part is labelled by machine number in invisible ink. You can measure the part's dimensions, but you cannot see the invisible label. Fitting a mixture model is like figuring out: which dimensions correspond to machine 1, and which to machine 2 — just from the measurements themselves.</p>
+    </div>
+
+    <p>The latent variable perspective turns mixture modelling into a <em>missing data problem</em>. If we knew all the $Z_i$ values, fitting would be straightforward — just fit a separate Gaussian to each group. The challenge is precisely that we do not know them. This motivates the EM algorithm, which we discuss next.</p>
+
+    <hr class="divider" />
+
+    <!-- §8 Estimation -->
+    <span class="section-label">Section 08</span>
+    <h2>Estimating Parameters: Why It Is Hard</h2>
+
+    <p>Given data $\{x_1, x_2, \ldots, x_n\}$, we want to estimate the parameters $\Theta = \{\pi_k, \mu_k, \sigma_k^2\}_{k=1}^K$ that best explain the data. The natural approach is <strong>maximum likelihood estimation</strong>: find the parameters that maximize the log-likelihood:</p>
+
+    <div class="eq-block">
+      $$\ell(\Theta) = \sum_{i=1}^{n} \log \left( \sum_{k=1}^{K} \pi_k \, \mathcal{N}(x_i \mid \mu_k, \sigma_k^2) \right)$$
+    </div>
+
+    <p>Notice the <em>log of a sum</em> inside. This makes taking derivatives complicated — there is no closed-form solution. Direct numerical optimization is possible but dangerous, because the likelihood surface is riddled with local maxima.</p>
+
+    <p>The key insight is: if we knew which component generated each data point, the problem splits into $K$ separate, easy optimization problems. This motivates a strategy of alternating between guessing the hidden labels and updating the parameters — the famous <strong>Expectation-Maximization (EM) algorithm</strong>.</p>
+
+    <!-- EM flow -->
+    <div class="em-steps">
+      <div class="em-step">Initialize<br/><small>Guess θ₀</small></div>
+      <div class="em-arrow">→</div>
+      <div class="em-step">E-step<br/><small>Compute responsibilities</small></div>
+      <div class="em-arrow">→</div>
+      <div class="em-step">M-step<br/><small>Update parameters</small></div>
+      <div class="em-arrow">→</div>
+      <div class="em-step">Converged?<br/><small>If no, repeat</small></div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §9 EM Algorithm -->
+    <span class="section-label">Section 09</span>
+    <h2>The Expectation-Maximization (EM) Algorithm</h2>
+
+    <p>The EM algorithm is one of the most elegant algorithms in all of statistics. It was formally introduced by Dempster, Laird, and Rubin in their landmark 1977 paper, though the underlying idea had appeared earlier in various forms. Here is how it works for GMMs.</p>
+
+    <h3>E-step: Compute Responsibilities</h3>
+    <p>In the E-step, we ask: given the current parameter estimates, what is the probability that observation $x_i$ came from component $k$? This is called the <strong>responsibility</strong> $r_{ik}$:</p>
+
+    <div class="eq-block">
+      $$r_{ik} = \frac{\pi_k \, \mathcal{N}(x_i \mid \mu_k, \sigma_k^2)}{\sum_{j=1}^{K} \pi_j \, \mathcal{N}(x_i \mid \mu_j, \sigma_j^2)}$$
+    </div>
+
+    <p>This is simply Bayes' theorem. $r_{ik}$ is the posterior probability that data point $i$ belongs to component $k$. Note that $\sum_k r_{ik} = 1$ for each $i$ — responsibilities are a soft, probabilistic assignment, not a hard label.</p>
+
+    <h3>M-step: Update Parameters</h3>
+    <p>In the M-step, we pretend the responsibilities are known, and use them to update the parameters. Each data point contributes to every component with weight $r_{ik}$:</p>
+
+    <div class="eq-block">
+      $$\hat{\pi}_k = \frac{1}{n}\sum_{i=1}^{n} r_{ik}, \qquad \hat{\mu}_k = \frac{\sum_i r_{ik} x_i}{\sum_i r_{ik}}, \qquad \hat{\sigma}_k^2 = \frac{\sum_i r_{ik}(x_i - \hat{\mu}_k)^2}{\sum_i r_{ik}}$$
+    </div>
+
+    <p>These updates are weighted versions of the standard mean and variance formulas — where the weights are the responsibilities. This is deeply intuitive: a data point that is very likely from component $k$ gets a large say in shaping component $k$'s parameters.</p>
+
+    <!-- EM Flowchart SVG -->
+    <figure>
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="200" fill="#f9f8ff" rx="8"/>
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 Z" fill="#5b4fcf"/></marker>
+        </defs>
+        <!-- Boxes -->
+        <!-- Init -->
+        <rect x="20" y="75" width="100" height="50" rx="8" fill="#ede9ff" stroke="#5b4fcf" stroke-width="1.5"/>
+        <text x="70" y="96" font-family="Inter,sans-serif" font-size="10" fill="#5b4fcf" text-anchor="middle" font-weight="700">Initialize</text>
+        <text x="70" y="110" font-family="Inter,sans-serif" font-size="9" fill="#5b4fcf" text-anchor="middle">π, μ, σ² randomly</text>
+        <!-- E-step -->
+        <rect x="165" y="75" width="110" height="50" rx="8" fill="#fdeef2" stroke="#e8456a" stroke-width="1.5"/>
+        <text x="220" y="95" font-family="Inter,sans-serif" font-size="10" fill="#e8456a" text-anchor="middle" font-weight="700">E-step</text>
+        <text x="220" y="109" font-family="Inter,sans-serif" font-size="9" fill="#e8456a" text-anchor="middle">Compute rᵢₖ</text>
+        <!-- M-step -->
+        <rect x="325" y="75" width="110" height="50" rx="8" fill="#e6f7f5" stroke="#18a999" stroke-width="1.5"/>
+        <text x="380" y="95" font-family="Inter,sans-serif" font-size="10" fill="#18a999" text-anchor="middle" font-weight="700">M-step</text>
+        <text x="380" y="109" font-family="Inter,sans-serif" font-size="9" fill="#18a999" text-anchor="middle">Update π, μ, σ²</text>
+        <!-- Convergence -->
+        <rect x="485" y="75" width="110" height="50" rx="8" fill="#fff8e6" stroke="#f0a500" stroke-width="1.5"/>
+        <text x="540" y="95" font-family="Inter,sans-serif" font-size="10" fill="#f0a500" text-anchor="middle" font-weight="700">Converged?</text>
+        <text x="540" y="109" font-family="Inter,sans-serif" font-size="9" fill="#f0a500" text-anchor="middle">Check Δ log-lik</text>
+        <!-- Arrows -->
+        <path d="M120,100 L165,100" stroke="#5b4fcf" stroke-width="1.8" marker-end="url(#arr)"/>
+        <path d="M275,100 L325,100" stroke="#5b4fcf" stroke-width="1.8" marker-end="url(#arr)"/>
+        <path d="M435,100 L485,100" stroke="#5b4fcf" stroke-width="1.8" marker-end="url(#arr)"/>
+        <!-- Loop back arrow if not converged -->
+        <path d="M595,100 C620,100 640,155 380,170 C220,170 165,155 165,125" stroke="#5b4fcf" stroke-width="1.5" fill="none" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+        <text x="400" y="185" font-family="Inter,sans-serif" font-size="9" fill="#5b4fcf" text-anchor="middle">Not converged → repeat</text>
+        <!-- Done arrow -->
+        <path d="M595,80 L595,45 L630,45" stroke="#18a999" stroke-width="1.5" fill="none" marker-end="url(#done)"/>
+        <defs><marker id="done" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto"><path d="M0,0 L0,5 L7,2.5 Z" fill="#18a999"/></marker></defs>
+        <text x="633" y="49" font-family="Inter,sans-serif" font-size="9" fill="#18a999">Done ✓</text>
+      </svg>
+      <figcaption><strong>Figure 7.</strong> The EM algorithm cycle. Each iteration is guaranteed to increase (or maintain) the observed-data log-likelihood. The algorithm terminates when the improvement falls below a small tolerance.</figcaption>
+    </figure>
+
+    <div class="callout research-insight">
+      <div class="callout-label">Research Insight</div>
+      <p>EM is guaranteed to increase the observed log-likelihood at every iteration. This beautiful monotonicity property, proven rigorously by Dempster, Laird &amp; Rubin (1977), means EM never "goes backwards" — even though it may converge to a local, not global, maximum.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §10 Identifiability -->
+    <span class="section-label">Section 10</span>
+    <h2>Identifiability: A Subtle Problem</h2>
+
+    <p>Here is something that surprises many beginners. Consider a two-component GMM with component 1 having mean 5 and component 2 having mean 10. Now swap the labels: call what was component 2 "component 1" and vice versa. The mixture density $f(x)$ is <em>exactly the same</em>.</p>
+
+    <p>This is called <strong>label switching</strong>. In a $K$-component mixture, there are $K!$ ways to permute the component labels, all giving the same distribution. This means the model is not identifiable in a strict parameter-level sense, even though the mixture density itself is identifiable under mild conditions.</p>
+
+    <div class="callout key-idea">
+      <div class="callout-label">Key Idea</div>
+      <p>A model is said to be <em>identifiable</em> if different parameter values always lead to different distributions. Mixture models suffer from <em>permutation non-identifiability</em>: swapping component labels gives the same model. This matters most in Bayesian analysis with MCMC, where the sampler can "switch" which component is which across iterations.</p>
+    </div>
+
+    <p>Practical fixes for label switching include: ordering constraints (e.g., require $\mu_1 \leq \mu_2 \leq \cdots \leq \mu_K$), post-hoc relabelling algorithms, or using identifiable parameterizations. In many applied settings, especially when using EM for clustering, this is handled automatically because EM converges to a particular permutation.</p>
+
+    <hr class="divider" />
+
+    <!-- §11 Model Selection -->
+    <span class="section-label">Section 11</span>
+    <h2>Model Selection: How Many Components?</h2>
+
+    <p>One of the most practically important questions in mixture modelling is: how many components should we use? Using too few misses real structure; using too many leads to overfitting — components that are essentially modelling noise.</p>
+
+    <p>A naive approach is to choose $K$ to maximize the log-likelihood. But this always favours larger $K$, since more parameters always allow a better fit. We need criteria that penalize complexity.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Criterion</th><th>Formula</th><th>Penalty</th><th>Best For</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>AIC</strong></td><td>$-2\ell + 2p$</td><td>Light (2 per param)</td><td>Prediction accuracy</td></tr>
+          <tr><td><strong>BIC</strong></td><td>$-2\ell + p\log n$</td><td>Heavier (grows with $n$)</td><td>Consistent model selection</td></tr>
+          <tr><td><strong>ICL</strong></td><td>BIC − 2 H(r)</td><td>BIC + classification uncertainty</td><td>When clusters matter most</td></tr>
+          <tr><td><strong>Cross-validation</strong></td><td>Held-out log-lik</td><td>Implicit via data splitting</td><td>Predictive performance</td></tr>
+          <tr><td><strong>Gap statistic</strong></td><td>Compares to reference</td><td>Reference distribution based</td><td>Visualizable elbow</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>In practice, BIC is the most commonly used criterion for mixture models. It tends to select a parsimonious $K$ that genuinely reflects the data structure rather than just fitting noise. Plotting BIC against $K$ and looking for the "elbow" or the minimum is a standard workflow.</p>
+
+    <!-- BIC plot SVG -->
+    <figure>
+      <svg viewBox="0 0 680 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="200" fill="#f9f8ff" rx="8"/>
+        <line x1="60" y1="170" x2="620" y2="170" stroke="#c8c8e8" stroke-width="1.5"/>
+        <line x1="60" y1="20" x2="60" y2="170" stroke="#c8c8e8" stroke-width="1.5"/>
+        <text x="340" y="190" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">Number of components K</text>
+        <text x="20" y="95" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle" transform="rotate(-90,20,95)">BIC</text>
+        <!-- X axis labels -->
+        <text x="120" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">1</text>
+        <text x="215" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">2</text>
+        <text x="310" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">3</text>
+        <text x="405" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">4</text>
+        <text x="500" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">5</text>
+        <text x="595" y="183" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">6</text>
+        <!-- BIC curve: large at K=1, drops to minimum at K=3, rises slightly -->
+        <polyline points="120,50 215,80 310,110 405,125 500,138 595,148" fill="none" stroke="#5b4fcf" stroke-width="2.5"/>
+        <!-- Wait — we want BIC to be LOWER = better. Let's invert: smaller BIC is better. -->
+        <!-- Actually for GMM, we often plot BIC where HIGHER = better (some software negates it). Let's just label correctly. -->
+        <!-- Redraw: BIC decreases then levels off -->
+        <polyline points="120,140 215,90 310,55 405,65 500,75 595,82" fill="none" stroke="#5b4fcf" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Dots -->
+        <circle cx="120" cy="140" r="5" fill="#5b4fcf"/>
+        <circle cx="215" cy="90" r="5" fill="#5b4fcf"/>
+        <circle cx="310" cy="55" r="7" fill="#e8456a" stroke="#fff" stroke-width="1.5"/>
+        <circle cx="405" cy="65" r="5" fill="#5b4fcf"/>
+        <circle cx="500" cy="75" r="5" fill="#5b4fcf"/>
+        <circle cx="595" cy="82" r="5" fill="#5b4fcf"/>
+        <!-- Optimal K annotation -->
+        <line x1="310" y1="55" x2="310" y2="170" stroke="#e8456a" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="315" y="45" font-family="Inter,sans-serif" font-size="10" fill="#e8456a" font-weight="600">K* = 3 (optimal)</text>
+        <text x="14" y="168" font-family="Inter,sans-serif" font-size="9" fill="#8888aa">low</text>
+        <text x="14" y="30" font-family="Inter,sans-serif" font-size="9" fill="#8888aa">high</text>
+      </svg>
+      <figcaption><strong>Figure 8.</strong> A typical BIC profile plot. The BIC value increases (better fit per parameter) up to $K^* = 3$, then levels off. Choosing $K = 3$ balances fit and parsimony — this is the optimal number of components.</figcaption>
+    </figure>
+
+    <hr class="divider" />
+
+    <!-- §12 Bayesian -->
+    <span class="section-label">Section 12</span>
+    <h2>From Classical to Bayesian Mixture Models</h2>
+
+    <p>So far we have been thinking about mixture models in the <em>frequentist</em> framework: there are fixed, unknown parameters $\Theta$, and we find point estimates via maximum likelihood. The Bayesian perspective offers a richer — and in many ways more principled — alternative.</p>
+
+    <p>In a Bayesian GMM, we place <strong>prior distributions</strong> over all parameters: the mixing proportions $\pi$ typically get a Dirichlet prior, the means get Gaussian priors, and the precisions (inverse variances) get Gamma priors. Instead of a single best-fit parameter value, we obtain a full <strong>posterior distribution</strong> over all parameters, conditioned on the data:</p>
+
+    <div class="eq-block">
+      $$p(\Theta \mid \mathbf{x}) \propto p(\mathbf{x} \mid \Theta) \cdot p(\Theta)$$
+    </div>
+
+    <p>This posterior encodes our uncertainty about the parameters after seeing the data. It naturally handles the overfitting problem (because priors shrink extreme parameter values), provides uncertainty quantification on cluster assignments, and can be extended to the <strong>Dirichlet Process Mixture Model</strong> — a Bayesian nonparametric version that lets the data determine the number of components automatically.</p>
+
+    <div class="callout research-insight">
+      <div class="callout-label">Research Insight</div>
+      <p>Bayesian mixtures are typically fitted using <strong>MCMC sampling</strong> (especially Gibbs sampling) or <strong>Variational Inference</strong>. The label-switching problem is especially pronounced here, since the MCMC chain may visit multiple permutations of the same solution. Relabelling strategies (e.g., Stephens, 2000) are an active research area.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §13 Pitfalls -->
+    <span class="section-label">Section 13</span>
+    <h2>Practical Pitfalls and How to Avoid Them</h2>
+
+    <p>Real-world mixture modelling is full of traps that trip up even experienced practitioners. Here is a field guide to the most common ones:</p>
+
+    <h3>Local Maxima and Initialization Sensitivity</h3>
+    <p>EM is guaranteed to converge — but only to a <em>local</em> maximum of the likelihood. Start from the wrong initial point, and you may end up with a poor solution. Best practice: run EM from many different random initializations (often 50–200 random starts), and keep the solution with the highest final log-likelihood. K-means initialization — using K-means cluster centres as starting means — often works well.</p>
+
+    <h3>Singular Covariance Matrices</h3>
+    <p>In the multivariate setting, a single data point can "collapse" a component onto itself, causing the covariance matrix to become singular (determinant → 0) and the likelihood to blow up to infinity. This is called a <em>degenerate solution</em>. Fix: add a small regularization term to the diagonal (a.k.a. a weakly informative prior on the precision), or simply restart EM when a degenerate solution is detected.</p>
+
+    <h3>Overfitting with Too Many Components</h3>
+    <p>If $K$ is too large, some components will model noise rather than signal — often with very small $\pi_k$ or very small $\sigma_k^2$. Use BIC or cross-validation to guard against this.</p>
+
+    <h3>Label Switching</h3>
+    <p>Especially in Bayesian MCMC, the sampler may freely swap component labels across iterations, making raw parameter estimates meaningless. Use post-processing relabelling or constrain the parameter space (e.g., order by $\mu_k$).</p>
+
+    <div class="callout key-idea">
+      <div class="callout-label">Key Idea</div>
+      <p>Mixture modelling is more art than algorithm. Always check your solutions visually, try multiple initializations, use information criteria for $K$ selection, and be skeptical of any component with a mixing proportion below 5% — it may be fitting noise.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §14 Real-World Example -->
+    <span class="section-label">Section 14</span>
+    <h2>A Concrete Example: Student Exam Scores</h2>
+
+    <p>Let us walk through a complete, illustrative example. Suppose a statistics professor administers a challenging exam to 200 students. Looking at the histogram of scores, she notices something interesting: rather than a single bell curve, the distribution seems to have two humps — one around 55 and another around 80.</p>
+
+    <p>Her hypothesis: the class actually contains two latent groups. <strong>Group 1</strong> consists of students who studied less rigorously (perhaps first-timers, or those without a strong maths background), centred around a score of 55 with some spread. <strong>Group 2</strong> consists of students with stronger preparation, centred around 80.</p>
+
+    <p>She fits a two-component GMM to the scores:</p>
+
+    <div class="eq-block">
+      $$f(x) = \pi_1 \, \mathcal{N}(x \mid 55, 10^2) + \pi_2 \, \mathcal{N}(x \mid 80, 7^2)$$
+    </div>
+
+    <p>After running EM, the estimated parameters are: $\hat{\pi}_1 = 0.42$, $\hat{\mu}_1 = 54.8$, $\hat{\sigma}_1 = 10.3$ and $\hat{\pi}_2 = 0.58$, $\hat{\mu}_2 = 81.2$, $\hat{\sigma}_2 = 6.9$. The model says roughly 42% of students were in the less-prepared group, and 58% in the well-prepared group.</p>
+
+    <!-- Exam score figure -->
+    <figure>
+      <svg viewBox="0 0 680 230" xmlns="http://www.w3.org/2000/svg">
+        <rect width="680" height="230" fill="#f9f8ff" rx="8"/>
+        <line x1="50" y1="195" x2="630" y2="195" stroke="#c8c8e8" stroke-width="1.5"/>
+        <line x1="50" y1="20" x2="50" y2="195" stroke="#c8c8e8" stroke-width="1.5"/>
+        <!-- X labels -->
+        <text x="130" y="210" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">30</text>
+        <text x="240" y="210" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">50</text>
+        <text x="350" y="210" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">70</text>
+        <text x="460" y="210" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">90</text>
+        <text x="570" y="210" font-family="Inter,sans-serif" font-size="10" fill="#8888aa" text-anchor="middle">110</text>
+        <text x="340" y="225" font-family="Inter,sans-serif" font-size="11" fill="#8888aa" text-anchor="middle">Exam Score</text>
+
+        <!-- Histogram bars (illustrative) -->
+        <rect x="55" y="190" width="18" height="5" fill="#c8c8e8"/>
+        <rect x="75" y="182" width="18" height="13" fill="#c8c8e8"/>
+        <rect x="95" y="172" width="18" height="23" fill="#c8c8e8"/>
+        <rect x="115" y="155" width="18" height="40" fill="#c8c8e8"/>
+        <rect x="135" y="140" width="18" height="55" fill="#c8c8e8"/>
+        <rect x="155" y="128" width="18" height="67" fill="#c8c8e8"/>
+        <rect x="175" y="120" width="18" height="75" fill="#c8c8e8"/>
+        <rect x="195" y="130" width="18" height="65" fill="#c8c8e8"/>
+        <rect x="215" y="145" width="18" height="50" fill="#c8c8e8"/>
+        <rect x="235" y="162" width="18" height="33" fill="#c8c8e8"/>
+        <rect x="255" y="175" width="18" height="20" fill="#c8c8e8"/>
+        <rect x="275" y="182" width="18" height="13" fill="#c8c8e8"/>
+        <rect x="295" y="179" width="18" height="16" fill="#c8c8e8"/>
+        <rect x="315" y="170" width="18" height="25" fill="#c8c8e8"/>
+        <rect x="335" y="158" width="18" height="37" fill="#c8c8e8"/>
+        <rect x="355" y="138" width="18" height="57" fill="#c8c8e8"/>
+        <rect x="375" y="120" width="18" height="75" fill="#c8c8e8"/>
+        <rect x="395" y="105" width="18" height="90" fill="#c8c8e8"/>
+        <rect x="415" y="115" width="18" height="80" fill="#c8c8e8"/>
+        <rect x="435" y="130" width="18" height="65" fill="#c8c8e8"/>
+        <rect x="455" y="150" width="18" height="45" fill="#c8c8e8"/>
+        <rect x="475" y="168" width="18" height="27" fill="#c8c8e8"/>
+        <rect x="495" y="180" width="18" height="15" fill="#c8c8e8"/>
+        <rect x="515" y="188" width="18" height="7" fill="#c8c8e8"/>
+        <rect x="535" y="192" width="18" height="3" fill="#c8c8e8"/>
+
+        <!-- GMM Component 1: mu=55 ~ x=175, sigma=10 -->
+        <path d="M55,195 C75,195 105,193 130,187 C150,181 158,165 165,147 C170,130 172,100 175,72 C178,100 180,130 185,147 C192,165 200,181 220,187 C245,193 275,195 295,195 Z" fill="#5b4fcf" fill-opacity="0.2"/>
+        <path d="M55,195 C75,195 105,193 130,187 C150,181 158,165 165,147 C170,130 172,100 175,72 C178,100 180,130 185,147 C192,165 200,181 220,187 C245,193 275,195 295,195" fill="none" stroke="#5b4fcf" stroke-width="2.2"/>
+        <text x="175" y="65" font-family="Inter,sans-serif" font-size="9" fill="#5b4fcf" text-anchor="middle" font-weight="600">μ̂₁=54.8, σ̂₁=10.3</text>
+
+        <!-- GMM Component 2: mu=80 ~ x=405 -->
+        <path d="M280,195 C320,195 365,192 395,180 C418,170 424,148 430,126 C435,106 436,82 405,62 C398,82 396,106 401,126 C407,148 413,170 436,180 C465,192 510,195 550,195 Z" fill="#e8456a" fill-opacity="0.18"/>
+        <!-- Corrected component 2: peaks at ~405 -->
+        <path d="M285,195 C320,195 355,192 378,181 C400,170 408,148 413,122 C417,100 418,78 405,55 C392,78 390,100 393,122 C396,148 400,170 420,181 C442,192 480,195 530,195" fill="none" stroke="#e8456a" stroke-width="2.2"/>
+        <text x="405" y="48" font-family="Inter,sans-serif" font-size="9" fill="#e8456a" text-anchor="middle" font-weight="600">μ̂₂=81.2, σ̂₂=6.9</text>
+
+        <!-- Mixture -->
+        <path d="M55,195 C75,195 108,193 130,186 C150,180 162,162 170,140 C175,118 174,90 176,72 C178,90 180,120 185,142 C192,165 205,180 240,185 C270,189 290,186 310,178 C330,170 340,155 360,133 C375,114 382,90 406,62 C415,82 418,108 422,128 C428,150 434,170 455,180 C478,190 510,195 550,195" fill="none" stroke="#18a999" stroke-width="2.8" stroke-dasharray="7,3"/>
+
+        <!-- Legend -->
+        <rect x="55" y="22" width="10" height="4" fill="#5b4fcf" rx="1"/>
+        <text x="70" y="28" font-family="Inter,sans-serif" font-size="9" fill="#5b4fcf">Group 1 (less-prepared)</text>
+        <rect x="200" y="22" width="10" height="4" fill="#e8456a" rx="1"/>
+        <text x="215" y="28" font-family="Inter,sans-serif" font-size="9" fill="#e8456a">Group 2 (well-prepared)</text>
+        <line x1="345" y1="24" x2="358" y2="24" stroke="#18a999" stroke-width="2.5" stroke-dasharray="5,2"/>
+        <text x="363" y="28" font-family="Inter,sans-serif" font-size="9" fill="#18a999">Fitted mixture</text>
+      </svg>
+      <figcaption><strong>Figure 9.</strong> Exam score data (grey histogram) fitted with a two-component GMM. The purple curve (Group 1, less-prepared) peaks around 55; the red curve (Group 2, well-prepared) peaks around 81; the teal dashed line is the overall fitted mixture density.</figcaption>
+    </figure>
+
+    <p>With the fitted model in hand, the professor can now compute a <em>responsibility score</em> for each student — the probability that they belong to Group 1 or Group 2. A student who scored 62, for instance, might have a responsibility of 0.68 for Group 1 and 0.32 for Group 2 — they are more likely to be in the less-prepared group, but with some uncertainty. This soft assignment is richer than any hard classification could provide.</p>
+
+    <hr class="divider" />
+
+    <!-- §15 Advanced Directions -->
+    <span class="section-label">Section 15</span>
+    <h2>Advanced Directions</h2>
+
+    <p>Finite mixture models and GMMs are not endpoints — they are gateways into a rich landscape of models. Here is a brief map of where this road leads:</p>
+
+    <h3>Multivariate GMMs</h3>
+    <p>In the univariate case, each component has a scalar mean and variance. In the multivariate setting (observations are vectors in $\mathbb{R}^d$), each component has a mean vector $\boldsymbol{\mu}_k$ and a full covariance matrix $\boldsymbol{\Sigma}_k$. The EM updates generalize naturally, but the curse of dimensionality makes estimation harder in high dimensions, motivating structural constraints on $\boldsymbol{\Sigma}_k$ (diagonal, spherical, tied, etc.).</p>
+
+    <h3>Dirichlet Process Mixture Models</h3>
+    <p>What if you do not want to choose $K$ at all? The Dirichlet Process Mixture Model (DPMM) is a Bayesian nonparametric model that places a prior over all possible values of $K$, letting the data "choose" the right number of components. This requires more sophisticated MCMC or variational inference methods, but the payoff is enormous flexibility.</p>
+
+    <h3>Mixture of Experts</h3>
+    <p>In a Mixture of Experts model, the mixing proportions $\pi_k$ are not constant — they depend on the input $x$ (or some covariate). Different "expert" submodels take over in different regions of the input space, and a "gating network" learns which expert to trust for a given input. This is a key building block of modern large language models (the Transformer MoE architecture).</p>
+
+    <h3>Deep Mixture Models</h3>
+    <p>Combining deep neural networks with mixture modelling gives rise to powerful generative models. Variational Autoencoders (VAEs) with mixture priors, normalizing flow-based densities, and diffusion models all have roots in classical mixture ideas. The latent variable structure of GMMs directly inspired the latent space of VAEs.</p>
+
+    <div class="callout research-insight">
+      <div class="callout-label">Research Insight</div>
+      <p>The Mixture of Experts (MoE) architecture, first introduced by Jacobs et al. (1991), has seen a dramatic renaissance in large language models. GPT-4 and several other frontier models reportedly use MoE layers, where different "expert" feedforward networks activate for different types of inputs — a direct descendant of the classical mixture model idea.</p>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- §16 Conclusion -->
+    <span class="section-label">Section 16</span>
+    <h2>Conclusion: The Power of Hidden Structure</h2>
+
+    <p>We have covered a lot of ground. Let us take a moment to consolidate the key ideas.</p>
+
+    <p>A <strong>Finite Mixture Model</strong> is a probability distribution built as a weighted combination of $K$ simpler component distributions. It is the right tool whenever data is generated by multiple hidden subpopulations — which, in the real world, is far more common than we might initially expect. The mixture density $f(x) = \sum_k \pi_k f_k(x \mid \theta_k)$ elegantly captures both the structure of each subpopulation and the proportions in which they appear.</p>
+
+    <p><strong>Gaussian Mixture Models</strong> are the most widely used special case, thanks to the mathematical tractability of Gaussian distributions, the availability of the EM algorithm for efficient fitting, and the theoretical result that GMMs can approximate any continuous density. They power applications from speech recognition and image segmentation to bioinformatics and market research.</p>
+
+    <p>The <strong>latent variable structure</strong> — the hidden component labels $Z$ — is the conceptual core that connects mixture models to a vast family of probabilistic models: Hidden Markov Models, Latent Dirichlet Allocation, Variational Autoencoders, and beyond. Learning to think clearly about latent structure is one of the most transferable skills in all of statistical machine learning.</p>
+
+    <div class="callout key-idea">
+      <div class="callout-label">Key Idea</div>
+      <p>The world rarely generates data from a single, simple distribution. Mixture models are our way of respecting that complexity — of saying, "I know this data has hidden layers, and I will model them explicitly." That honest acknowledgment of hidden structure is what makes mixture models so enduringly powerful.</p>
+    </div>
+
+    <h3>Where to Go Next</h3>
+    <p>If this article has sparked your curiosity, here are the natural next steps: (1) implement a GMM and EM algorithm from scratch in Python — there is no better way to build intuition than writing the update equations yourself; (2) explore the <code>sklearn.mixture.GaussianMixture</code> class to get comfortable with practical fitting; (3) read the original Dempster, Laird &amp; Rubin (1977) EM paper — it is a masterpiece of clear statistical writing; and (4) when you are ready for the frontier, dive into Dirichlet Process mixtures and variational inference.</p>
+
+    <p>The study of hidden structure is one of the deepest and most rewarding threads in all of statistics. I hope this article has given you a confident foothold to begin pulling on it.</p>
+
+    <!-- Author note -->
+    <div class="author-note">
+      <div class="author-avatar">P</div>
+      <div class="author-note-text">
+        <h4>Pranav T V — PhD Scholar in Statistics, Pondicherry University</h4>
+        <p>I write about statistical theory, machine learning methods, and the ideas that connect them — always starting from intuition before moving to formalism. If you found this article helpful, I'd love to hear from you. My current research focuses on Bayesian nonparametric mixture models and their applications in biostatistics.</p>
+      </div>
+    </div>
+
+  </article>
+</div><!-- /container -->
+
+</body>
+</html>
