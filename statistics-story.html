@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Story of Statistics</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c27;
+    --border: rgba(120,100,220,0.18);
+    --accent: #7c5cbf;
+    --accent2: #4fc3f7;
+    --accent3: #f06292;
+    --accent4: #81c784;
+    --text: #e8e6f0;
+    --text-muted: #8884a0;
+    --glass: rgba(20,18,35,0.72);
+    --glow: rgba(124,92,191,0.25);
+    --node-bg: #1a1828;
+  }
+  [data-theme="light"] {
+    --bg: #f4f2fb;
+    --surface: #ffffff;
+    --surface2: #ede9f8;
+    --border: rgba(100,70,200,0.15);
+    --accent: #6a3fcb;
+    --accent2: #0277bd;
+    --accent3: #c2185b;
+    --accent4: #388e3c;
+    --text: #18142e;
+    --text-muted: #6b6480;
+    --glass: rgba(255,255,255,0.75);
+    --glow: rgba(106,63,203,0.12);
+    --node-bg: #f0ecff;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.75;
+    font-size: 16px;
+    transition: background 0.4s, color 0.4s;
+    overflow-x: hidden;
+  }
+
+  /* STARS BG */
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .star { position: absolute; border-radius: 50%; background: white; animation: twinkle var(--dur, 3s) ease-in-out infinite; opacity: 0; }
+  @keyframes twinkle { 0%,100%{opacity:0;} 50%{opacity:var(--op,0.5);} }
+  [data-theme="light"] .stars { display: none; }
+
+  /* LAYOUT */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  .wide { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+    background: var(--glass);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .nav-brand { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--accent); flex: 1; }
+  .search-box {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 24px; padding: 6px 14px;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input { background: none; border: none; outline: none; color: var(--text); font-size: 0.9rem; width: 180px; }
+  .search-box input::placeholder { color: var(--text-muted); }
+  .nav-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 0.8rem;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .theme-btn {
+    background: none; border: 1px solid var(--border);
+    border-radius: 50%; width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 1.1rem; color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 120px 24px 80px;
+  }
+  .hero-eyebrow {
+    font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 24px;
+    border: 1px solid var(--border); border-radius: 20px;
+    padding: 6px 18px; display: inline-block;
+    backdrop-filter: blur(10px);
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    font-weight: 900; line-height: 1.1;
+    margin-bottom: 28px;
+    background: linear-gradient(135deg, var(--text) 30%, var(--accent) 70%, var(--accent2) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1.15rem; color: var(--text-muted); max-width: 580px;
+    line-height: 1.7; margin-bottom: 48px;
+  }
+  .hero-scroll {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: var(--text-muted); font-size: 0.8rem; letter-spacing: 0.1em;
+    animation: float 2.5s ease-in-out infinite;
+  }
+  .hero-scroll-arrow { width: 24px; height: 24px; border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent); transform: rotate(45deg); margin-top: 4px; }
+  @keyframes float { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* SECTION */
+  section { padding: 80px 0; }
+  .section-label {
+    font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700; line-height: 1.2; margin-bottom: 28px;
+  }
+  p { margin-bottom: 20px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+  .lead { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; }
+
+  /* PULL QUOTE */
+  .pull-quote {
+    border-left: 3px solid var(--accent);
+    padding: 20px 28px; margin: 36px 0;
+    background: var(--surface2);
+    border-radius: 0 12px 12px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-style: italic;
+    color: var(--text);
+  }
+
+  /* CHAPTER CARDS */
+  .chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 40px; }
+  .chapter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .chapter-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 40px var(--glow); }
+  .chapter-card-num { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--accent); margin-bottom: 10px; }
+  .chapter-card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 10px; }
+  .chapter-card p { font-size: 0.9rem; color: var(--text-muted); margin: 0; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding: 20px 0; }
+  .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3)); transform: translateX(-50%); }
+  .tl-item { display: flex; gap: 40px; margin-bottom: 48px; align-items: flex-start; }
+  .tl-item:nth-child(even) { flex-direction: row-reverse; }
+  .tl-item:nth-child(even) .tl-content { text-align: right; }
+  .tl-content { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 24px; }
+  .tl-content:hover { border-color: var(--accent); box-shadow: 0 6px 30px var(--glow); transition: all 0.3s; }
+  .tl-year { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .tl-content h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 8px; }
+  .tl-content p { font-size: 0.88rem; color: var(--text-muted); margin: 0; }
+  .tl-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 3px solid var(--bg); flex-shrink: 0; margin-top: 24px; position: relative; z-index: 2; }
+  .tl-spacer { flex: 1; }
+  @media(max-width:680px){
+    .timeline::before { left: 24px; }
+    .tl-item, .tl-item:nth-child(even) { flex-direction: column; padding-left: 48px; }
+    .tl-item:nth-child(even) .tl-content { text-align: left; }
+    .tl-dot { position: absolute; left: 16px; }
+    .tl-spacer { display: none; }
+    .tl-item { position: relative; }
+  }
+
+  /* BIG TREE */
+  #tree-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .tree-toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+  .tree-btn {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+    border-radius: 8px; padding: 7px 14px; cursor: pointer; font-size: 0.82rem;
+    transition: all 0.2s;
+  }
+  .tree-btn:hover, .tree-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(124,92,191,0.08); }
+  #tree-container {
+    width: 100%; overflow: auto;
+    border: 1px solid var(--border); border-radius: 16px;
+    background: var(--node-bg);
+    min-height: 500px;
+    position: relative;
+  }
+  #tree-svg { display: block; }
+  .tree-node { cursor: pointer; }
+  .tree-node rect {
+    rx: 8; ry: 8;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+    transition: all 0.2s;
+  }
+  .tree-node:hover rect { filter: drop-shadow(0 4px 16px rgba(124,92,191,0.4)); }
+  .tree-node text { pointer-events: none; font-family: 'Inter', sans-serif; }
+  .tree-link { fill: none; stroke-width: 1.5; stroke-opacity: 0.5; }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(5,5,15,0.75); backdrop-filter: blur(8px);
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px;
+    max-width: 560px; width: 100%;
+    max-height: 80vh; overflow-y: auto;
+    position: relative;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn { from{transform:scale(0.92) translateY(20px);opacity:0;} to{transform:scale(1) translateY(0);opacity:1;} }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 50%; width: 32px; height: 32px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); font-size: 1.1rem; transition: all 0.2s;
+  }
+  .modal-close:hover { border-color: var(--accent3); color: var(--accent3); }
+  .modal-tag {
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    background: rgba(124,92,191,0.15); color: var(--accent);
+    border: 1px solid rgba(124,92,191,0.3);
+    border-radius: 20px; padding: 4px 12px;
+    display: inline-block; margin-bottom: 14px;
+  }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 16px; }
+  .modal-section { margin-top: 18px; }
+  .modal-section-label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 6px; }
+  .modal p { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0; }
+  .modal-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .modal-tag-item { font-size: 0.78rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; color: var(--text-muted); }
+
+  /* NETWORK / FLOW DIAGRAMS */
+  .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  @media(max-width:700px){ .viz-grid { grid-template-columns: 1fr; } }
+  .viz-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 24px; overflow: hidden;
+  }
+  .viz-card h4 { font-family: 'Playfair Display', serif; font-size: 1rem; margin-bottom: 16px; color: var(--text); }
+  .viz-card svg { width: 100%; display: block; }
+
+  /* ROADMAP */
+  .roadmap { display: flex; gap: 0; overflow-x: auto; padding-bottom: 12px; }
+  .roadmap-step {
+    display: flex; flex-direction: column; align-items: center;
+    min-width: 130px; position: relative;
+  }
+  .roadmap-step:not(:last-child)::after {
+    content: '→';
+    position: absolute; right: -14px; top: 22px;
+    font-size: 1.2rem; color: var(--accent);
+  }
+  .roadmap-bubble {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--surface2); border: 2px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; margin-bottom: 10px;
+    box-shadow: 0 0 16px var(--glow);
+  }
+  .roadmap-step span { font-size: 0.78rem; color: var(--text-muted); text-align: center; line-height: 1.4; }
+
+  /* CONNECTIONS SECTION */
+  .connections-flow { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  .conn-pill {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 24px; padding: 8px 18px;
+    font-size: 0.88rem; color: var(--text-muted);
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s; cursor: default;
+  }
+  .conn-pill:hover { border-color: var(--accent2); color: var(--accent2); background: rgba(79,195,247,0.07); }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 48px 24px; text-align: center;
+    color: var(--text-muted); font-size: 0.88rem;
+  }
+  footer strong { color: var(--accent); }
+
+  /* BACK TO TOP */
+  #back-top {
+    position: fixed; bottom: 28px; right: 28px; z-index: 90;
+    background: var(--accent); color: white;
+    border: none; border-radius: 50%; width: 44px; height: 44px;
+    cursor: pointer; font-size: 1.2rem;
+    box-shadow: 0 4px 20px var(--glow);
+    opacity: 0; transition: opacity 0.3s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #back-top.visible { opacity: 1; }
+
+  /* UNIVERSE MAP */
+  #universe-svg { width: 100%; max-height: 480px; }
+
+  /* SEARCH HIGHLIGHT */
+  .search-highlight { background: rgba(124,92,191,0.3); border-radius: 3px; padding: 0 2px; }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 60px 0; }
+
+  /* Application ecosystem */
+  .ecosystem { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 28px; }
+  .eco-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px;
+    display: flex; flex-direction: column; gap: 10px;
+    transition: all 0.25s;
+  }
+  .eco-item:hover { border-color: var(--accent); transform: translateY(-3px); }
+  .eco-icon { font-size: 1.8rem; }
+  .eco-item h5 { font-size: 0.92rem; font-weight: 600; }
+  .eco-item p { font-size: 0.82rem; color: var(--text-muted); margin: 0; }
+
+  /* RESPONSIVE */
+  @media(max-width:600px){
+    .nav-btn { display: none; }
+    .search-box input { width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">∑ Statistics</div>
+  <div class="search-box">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Search a branch…">
+  </div>
+  <button class="nav-btn" onclick="expandAll()">Expand All</button>
+  <button class="nav-btn" onclick="collapseAll()">Collapse All</button>
+  <button class="theme-btn" id="theme-toggle" title="Toggle theme">🌙</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">A Complete Narrative Journey</div>
+  <h1>The Story of Statistics</h1>
+  <p class="hero-sub">From the first time humans counted sheep to the algorithms reshaping civilization — a beginner's guided tour through the entire landscape of statistical science.</p>
+  <div class="hero-scroll">SCROLL TO EXPLORE <div class="hero-scroll-arrow"></div></div>
+</div>
+
+<!-- CHAPTER 1: WHY -->
+<section>
+  <div class="container">
+    <div class="section-label">Chapter One</div>
+    <h2>Why Does Statistics Exist?</h2>
+    <p class="lead">Long before any equation was written, humans faced an ancient problem: the world is enormous, and our minds are small. We could not watch every fish in the sea, count every grain in the harvest, or speak with every citizen in the empire. And yet, decisions had to be made.</p>
+
+    <div class="pull-quote">"We cannot see everything. But perhaps we can see enough."</div>
+
+    <p>Ancient rulers taking census counts, merchants estimating cargo weights, astronomers averaging star readings — these were the first statisticians, even if no one called them that. The need was simple: turn overwhelming, scattered observations into knowledge you could actually use.</p>
+    <p>Statistics was born from this tension between <em>the vastness of reality</em> and <em>the limits of human perception</em>. Every branch of the field, no matter how abstract it seems today, is ultimately an answer to the same original question: <strong>How can we understand the world from incomplete information?</strong></p>
+
+    <div class="chapter-grid">
+      <div class="chapter-card">
+        <div class="chapter-card-num">01 / ORIGIN</div>
+        <h3>The First Problem</h3>
+        <p>Too much world, too little time. Humans needed summaries — numbers that captured the shape of reality without needing to see all of it.</p>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-card-num">02 / CHALLENGE</div>
+        <h3>Uncertainty Was Everywhere</h3>
+        <p>Observations varied. Tomorrow's harvest didn't match last year's exactly. The same treatment worked for some patients but not others. Variability demanded explanation.</p>
+      </div>
+      <div class="chapter-card">
+        <div class="chapter-card-num">03 / BREAKTHROUGH</div>
+        <h3>Patterns Could Be Found</h3>
+        <p>Beneath the noise, structure existed. Statistical thinking developed as the art of finding those patterns and knowing which ones to trust.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 2: NARRATIVE STORY -->
+<section style="background: var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-label">Chapter Two</div>
+    <h2>The Journey of the Field</h2>
+
+    <p class="lead">Statistics didn't arrive fully formed. It grew through centuries of real problems demanding real solutions — each breakthrough opening a door to the next challenge.</p>
+
+    <p>It started with <strong>description</strong>. Before you can analyze, you must summarize. Early statisticians invented ways to capture the "center" of data — the average harvest, the typical lifespan, the most common answer. They measured spread, shape, and pattern. This became <em>Descriptive Statistics</em>: the art of telling the story of data you already have.</p>
+
+    <p>But description wasn't enough. People didn't just want to know what had happened — they wanted to predict what <em>would</em> happen. A doctor couldn't examine every patient; they needed to test a sample and generalize. This desire to reason from the few to the many gave birth to <em>Inferential Statistics</em> — the science of drawing conclusions beyond your data.</p>
+
+    <div class="pull-quote">"You can never be certain from a sample. But you can be carefully uncertain — and that's enormously useful."</div>
+
+    <p>Inference required understanding chance. If you flip a coin a hundred times, you expect roughly fifty heads — but you might get fifty-three. Is that suspicious, or just random? To answer this, statistics reached into mathematics and emerged with <strong>Probability Theory</strong> — a rigorous language for describing randomness, uncertainty, and the behavior of chance.</p>
+
+    <p>Then came the need to predict. Merchants, scientists, and engineers wanted to know: if I know one thing about a situation, what can I predict about another? This question led directly to <em>Regression</em> — the machinery of prediction. Simple at first, measuring how one variable relates to another, but quickly growing into a vast web of techniques that power everything from weather forecasting to recommendation algorithms.</p>
+
+    <p>Data grew more complex. Researchers stopped looking at one measurement at a time and began studying many things simultaneously — personality traits, economic indicators, genetic markers. The response was <em>Multivariate Statistics</em>, which treats data as existing in many dimensions at once.</p>
+
+    <p>Time added another dimension. Stock prices, climate patterns, heartbeats, and epidemics all change over time in structured ways. Understanding data that flows through time became its own art: <em>Time Series Analysis</em>.</p>
+
+    <p>Meanwhile, a philosophical debate was brewing. Some statisticians said: we should let the data speak. Others said: we should combine data with prior knowledge and update our beliefs as evidence arrives. This second camp, following the 18th-century Reverend Thomas Bayes, gave us <em>Bayesian Statistics</em> — a complete alternative worldview that has become one of the most powerful frameworks in modern science.</p>
+
+    <p>As computers arrived, a transformation began. Statistical methods that would have taken decades of calculation could now run in seconds. New techniques emerged that only made sense with machine power — simulation, resampling, cross-validation. The discipline of <em>Computational Statistics</em> emerged, and with it, the borders between statistics and computer science began to blur.</p>
+
+    <p>That blurring produced something remarkable: <strong>Statistical Learning</strong> — algorithms that don't just analyze data, but learn from it. Today's machine learning is largely applied statistics, rephrased, turbocharged by computation, and aimed at prediction and pattern recognition at scales once unimaginable.</p>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <div class="container">
+    <div class="section-label">Evolution</div>
+    <h2>Key Moments in Statistical History</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">~3000 BCE</div>
+          <h4>The First Census</h4>
+          <p>Babylonian and Egyptian rulers count populations for taxation and governance. Data collection begins.</p>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-spacer"></div>
+        <div class="tl-dot" style="background:var(--accent2)"></div>
+        <div class="tl-content">
+          <div class="tl-year">1662</div>
+          <h4>John Graunt & Life Tables</h4>
+          <p>Graunt analyzes London's mortality records — arguably the birth of modern statistical thinking.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">1763</div>
+          <h4>Bayes' Theorem Published</h4>
+          <p>Thomas Bayes's essay on probability is published posthumously, planting the seed of an entirely different statistical philosophy.</p>
+        </div>
+        <div class="tl-dot" style="background:var(--accent3)"></div>
+        <div class="tl-spacer"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-spacer"></div>
+        <div class="tl-dot" style="background:var(--accent4)"></div>
+        <div class="tl-content">
+          <div class="tl-year">1800s</div>
+          <h4>Gauss, Quetelet & Social Physics</h4>
+          <p>Regression and the normal distribution are formalized. The "average man" concept pioneers social statistics.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">1890s–1930s</div>
+          <h4>Fisher, Pearson & the Modern Framework</h4>
+          <p>R.A. Fisher invents analysis of variance, experimental design, and maximum likelihood. Karl Pearson founds the first statistics journal. Modern statistics is born.</p>
+        </div>
+        <div class="tl-dot"></div>
+        <div class="tl-spacer"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-spacer"></div>
+        <div class="tl-dot" style="background:var(--accent2)"></div>
+        <div class="tl-content">
+          <div class="tl-year">1950s–1970s</div>
+          <h4>Computers Change Everything</h4>
+          <p>Statistical calculations that once took years run in hours. New methods — simulation, bootstrapping — become feasible.</p>
+        </div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-content">
+          <div class="tl-year">1980s–2000s</div>
+          <h4>Machine Learning Emerges</h4>
+          <p>Decision trees, neural networks, and support vector machines blur the line between statistics and computer science.</p>
+        </div>
+        <div class="tl-dot" style="background:var(--accent3)"></div>
+        <div class="tl-spacer"></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-spacer"></div>
+        <div class="tl-dot" style="background:var(--accent4)"></div>
+        <div class="tl-content">
+          <div class="tl-year">2010s–Now</div>
+          <h4>Data Science & the Big Data Era</h4>
+          <p>Terabytes of data, deep learning, causal inference, and explainable AI reshape what statistics means in practice.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTERACTIVE TREE -->
+<section id="tree-section">
+  <div class="wide">
+    <div class="section-label">Interactive Map</div>
+    <h2>The Complete Statistics Tree</h2>
+    <p style="color:var(--text-muted); margin-bottom:24px;">Click any node to learn what it does, why it matters, and how it connects to the rest of statistics.</p>
+    <div class="tree-toolbar">
+      <button class="tree-btn active" onclick="filterTree('all')">All Branches</button>
+      <button class="tree-btn" onclick="filterTree('foundations')">Foundations</button>
+      <button class="tree-btn" onclick="filterTree('classical')">Classical</button>
+      <button class="tree-btn" onclick="filterTree('applied')">Applied</button>
+      <button class="tree-btn" onclick="filterTree('modern')">Modern</button>
+    </div>
+    <div id="tree-container">
+      <svg id="tree-svg"></svg>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECTIONS -->
+<section>
+  <div class="container">
+    <div class="section-label">Chapter Three</div>
+    <h2>How Every Branch Connects</h2>
+    <p class="lead">Statistics is not a collection of isolated techniques. It is a single, deeply interconnected discipline where every field borrows from and informs every other.</p>
+    <p>Probability is the foundation underneath everything. Without it, there is no principled way to talk about uncertainty, and without uncertainty, statistics would have nothing to do. Every branch — from simple averages to deep learning — rests on the mathematical language of chance.</p>
+    <p>Descriptive statistics feeds inference: you must first summarize what you have before you can generalize. Inference feeds regression, which feeds modeling. Bayesian statistics rewires inference by treating probability as belief rather than frequency. Nonparametric methods arise when the assumptions of classical statistics break down. Robust statistics handles the world being messier than models expect. And computational statistics ties them all together in the age of data abundance.</p>
+
+    <div class="viz-grid">
+      <!-- Flow diagram SVG -->
+      <div class="viz-card">
+        <h4>Statistics → AI Flow</h4>
+        <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowA" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#7c5cbf" opacity="0.7"/></marker>
+          </defs>
+          <!-- boxes -->
+          <rect x="90" y="10" width="140" height="36" rx="10" fill="rgba(124,92,191,0.15)" stroke="#7c5cbf" stroke-width="1.2"/>
+          <text x="160" y="33" text-anchor="middle" fill="#e8e6f0" font-size="13" font-family="Inter">Statistics</text>
+          <rect x="90" y="68" width="140" height="36" rx="10" fill="rgba(79,195,247,0.12)" stroke="#4fc3f7" stroke-width="1.2"/>
+          <text x="160" y="91" text-anchor="middle" fill="#e8e6f0" font-size="13" font-family="Inter">Probability</text>
+          <rect x="60" y="130" width="120" height="36" rx="10" fill="rgba(240,98,146,0.12)" stroke="#f06292" stroke-width="1.2"/>
+          <text x="120" y="153" text-anchor="middle" fill="#e8e6f0" font-size="12" font-family="Inter">Stat. Learning</text>
+          <rect x="200" y="130" width="100" height="36" rx="10" fill="rgba(124,92,191,0.1)" stroke="#7c5cbf" stroke-width="1.2"/>
+          <text x="250" y="153" text-anchor="middle" fill="#e8e6f0" font-size="12" font-family="Inter">Inference</text>
+          <rect x="30" y="196" width="110" height="36" rx="10" fill="rgba(129,199,132,0.12)" stroke="#81c784" stroke-width="1.2"/>
+          <text x="85" y="219" text-anchor="middle" fill="#e8e6f0" font-size="12" font-family="Inter">Machine Learning</text>
+          <rect x="165" y="196" width="110" height="36" rx="10" fill="rgba(79,195,247,0.1)" stroke="#4fc3f7" stroke-width="1.2"/>
+          <text x="220" y="219" text-anchor="middle" fill="#e8e6f0" font-size="12" font-family="Inter">Deep Learning / AI</text>
+          <!-- arrows -->
+          <line x1="160" y1="46" x2="160" y2="68" stroke="#7c5cbf" stroke-width="1.5" marker-end="url(#arrowA)" stroke-opacity="0.7"/>
+          <line x1="130" y1="104" x2="110" y2="130" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#arrowA)" stroke-opacity="0.6"/>
+          <line x1="185" y1="104" x2="230" y2="130" stroke="#4fc3f7" stroke-width="1.5" marker-end="url(#arrowA)" stroke-opacity="0.6"/>
+          <line x1="100" y1="166" x2="80" y2="196" stroke="#f06292" stroke-width="1.5" marker-end="url(#arrowA)" stroke-opacity="0.6"/>
+          <line x1="140" y1="166" x2="200" y2="200" stroke="#f06292" stroke-width="1.5" marker-end="url(#arrowA)" stroke-opacity="0.4"/>
+        </svg>
+      </div>
+      <!-- Universe circles -->
+      <div class="viz-card">
+        <h4>Statistical Universe Map</h4>
+        <svg id="universe-svg" viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="cg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#7c5cbf" stop-opacity="0.4"/><stop offset="100%" stop-color="#7c5cbf" stop-opacity="0"/></radialGradient>
+            <radialGradient id="cg2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#4fc3f7" stop-opacity="0.3"/><stop offset="100%" stop-color="#4fc3f7" stop-opacity="0"/></radialGradient>
+            <radialGradient id="cg3" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#f06292" stop-opacity="0.25"/><stop offset="100%" stop-color="#f06292" stop-opacity="0"/></radialGradient>
+          </defs>
+          <circle cx="160" cy="130" r="120" fill="url(#cg1)" stroke="#7c5cbf" stroke-width="1" stroke-opacity="0.3"/>
+          <circle cx="160" cy="130" r="85" fill="url(#cg2)" stroke="#4fc3f7" stroke-width="1" stroke-opacity="0.3"/>
+          <circle cx="160" cy="130" r="50" fill="url(#cg3)" stroke="#f06292" stroke-width="1" stroke-opacity="0.3"/>
+          <text x="160" y="134" text-anchor="middle" fill="#f06292" font-size="11" font-weight="600" font-family="Inter">Probability</text>
+          <!-- orbit labels -->
+          <text x="160" y="68" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Inference</text>
+          <text x="232" y="100" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Regression</text>
+          <text x="88" y="100" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Descriptive</text>
+          <text x="232" y="165" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Bayesian</text>
+          <text x="88" y="165" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Time Series</text>
+          <text x="160" y="195" text-anchor="middle" fill="#4fc3f7" font-size="10" font-family="Inter">Modeling</text>
+          <!-- outer -->
+          <text x="160" y="26" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">Data Science</text>
+          <text x="260" y="60" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">ML / AI</text>
+          <text x="55" y="60" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">Biostatistics</text>
+          <text x="265" y="188" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">Econometrics</text>
+          <text x="52" y="188" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">Psychometrics</text>
+          <text x="160" y="248" text-anchor="middle" fill="#7c5cbf" font-size="9.5" font-family="Inter">Causal Inference</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- application ecosystem -->
+    <div style="margin-top:56px;">
+      <div class="section-label">Applications</div>
+      <h2>Where Statistics Lives in the World</h2>
+      <p style="color:var(--text-muted);">Every field that deals with uncertainty and data relies on statistics. Here is where you encounter it, whether you know it or not.</p>
+      <div class="ecosystem">
+        <div class="eco-item"><div class="eco-icon">🏥</div><h5>Medicine & Health</h5><p>Clinical trials, drug approval, disease modeling, survival analysis, and epidemiology.</p></div>
+        <div class="eco-item"><div class="eco-icon">📈</div><h5>Economics & Finance</h5><p>Market modeling, risk assessment, forecasting, and econometric policy analysis.</p></div>
+        <div class="eco-item"><div class="eco-icon">🤖</div><h5>AI & Machine Learning</h5><p>Pattern recognition, prediction algorithms, and model evaluation all rest on statistical theory.</p></div>
+        <div class="eco-item"><div class="eco-icon">🌍</div><h5>Environmental Science</h5><p>Climate modeling, pollution measurement, biodiversity tracking, and disaster prediction.</p></div>
+        <div class="eco-item"><div class="eco-icon">🧪</div><h5>Physics & Engineering</h5><p>Quality control, reliability, signal processing, and experimental error quantification.</p></div>
+        <div class="eco-item"><div class="eco-icon">🧬</div><h5>Genomics & Biology</h5><p>Gene expression analysis, clinical genetics, and biomarker discovery.</p></div>
+        <div class="eco-item"><div class="eco-icon">🗳️</div><h5>Social Sciences</h5><p>Survey design, political polling, educational measurement, and behavioral research.</p></div>
+        <div class="eco-item"><div class="eco-icon">🏭</div><h5>Manufacturing</h5><p>Process control, defect reduction, Six Sigma, and reliability engineering.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 4: MODERN FRONTIERS -->
+<section style="background: var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="section-label">Chapter Four</div>
+    <h2>Where Statistics Is Heading</h2>
+    <p class="lead">Today's statistical research grapples with problems that would have been unimaginable to Fisher or Pearson. The field is in the middle of one of its most exciting transformations.</p>
+
+    <p><strong>Causal Inference</strong> is perhaps the hottest area in modern statistics. For a century, statisticians repeated the mantra "correlation is not causation." Now, researchers like Judea Pearl have developed rigorous mathematical tools for reasoning about causation itself — not just association, but whether one thing actually <em>causes</em> another. This matters enormously in medicine, economics, and AI.</p>
+
+    <p><strong>High-Dimensional Statistics</strong> addresses a modern paradox: we often have more variables than observations. A genome study might track a million genetic markers in a thousand patients. Classical methods collapse under this weight. New techniques like regularization and sparse modeling have emerged to handle it.</p>
+
+    <p><strong>Explainable AI</strong> asks: when a machine learning model makes a prediction, can we understand why? Statistics is at the center of efforts to make AI systems interpretable and accountable — questions with enormous societal stakes.</p>
+
+    <p><strong>Federated Learning and Privacy Statistics</strong> respond to a new constraint: data is sensitive. How do you learn from hospital records without sharing them? Statistical methods for learning under privacy constraints have become a field in themselves.</p>
+
+    <p>And on the philosophical frontier, <strong>Neutrosophic Statistics</strong> and related frameworks explore what happens when data itself is uncertain, ambiguous, or contradictory — a reflection of a world that doesn't always fit neat categories.</p>
+
+    <div class="connections-flow">
+      <div class="conn-pill"><div class="conn-dot" style="background:#7c5cbf"></div>Causal Inference</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#4fc3f7"></div>Federated Learning</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#f06292"></div>Explainable AI</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#81c784"></div>High-Dimensional Stats</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#ffb74d"></div>Quantum Statistics</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#7c5cbf"></div>Neutrosophic Methods</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#4fc3f7"></div>Privacy-Preserving Stats</div>
+      <div class="conn-pill"><div class="conn-dot" style="background:#f06292"></div>Topological Data Analysis</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEARNING ROADMAP -->
+<section>
+  <div class="container">
+    <div class="section-label">For Learners</div>
+    <h2>A Learning Roadmap</h2>
+    <p style="color:var(--text-muted); margin-bottom:32px;">Where to begin, and how the journey unfolds.</p>
+    <div class="roadmap">
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">📊</div>
+        <span>Descriptive Statistics</span>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">🎲</div>
+        <span>Probability Basics</span>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">🔬</div>
+        <span>Inference & Hypothesis Testing</span>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">📉</div>
+        <span>Regression & Modeling</span>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">🧠</div>
+        <span>Statistical Learning</span>
+      </div>
+      <div class="roadmap-step">
+        <div class="roadmap-bubble">🚀</div>
+        <span>Modern Frontiers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p style="font-family:'Playfair Display',serif; font-size:1.3rem; margin-bottom:12px; color:var(--text);">Statistics is not about numbers. It is about <strong>understanding</strong>.</p>
+    <p>It is the science of learning from incomplete information in an uncertain world — and it is one of the most powerful intellectual tools humanity has ever created.</p>
+    <p style="margin-top:24px; font-size:0.8rem;">Click any node in the tree above to keep exploring ↑</p>
+  </div>
+</footer>
+
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-tag" id="modal-tag">Branch</div>
+    <h3 id="modal-title"></h3>
+    <div class="modal-section">
+      <div class="modal-section-label">What it is</div>
+      <p id="modal-what"></p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Why it matters</div>
+      <p id="modal-why"></p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Real-world applications</div>
+      <p id="modal-apps"></p>
+    </div>
+    <div class="modal-section">
+      <div class="modal-section-label">Connects to</div>
+      <div class="modal-tags" id="modal-connects"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const nodeData = {
+  "Statistics": { tag:"Root", what:"The science of collecting, analyzing, interpreting, and presenting data. It is the discipline of making sense of the world through numbers and patterns.", why:"Every field that deals with uncertainty — medicine, economics, engineering, social science — depends on statistical thinking to draw valid conclusions.", apps:"Used in virtually every scientific discipline, government policy, business decisions, and AI research.", connects:["Probability","Descriptive Statistics","Inferential Statistics","Statistical Learning"] },
+  "Foundations": { tag:"Foundations", what:"The conceptual bedrock: what data is, how it is measured, how samples relate to populations, and what kinds of questions statistics can and cannot answer.", why:"Without a clear understanding of what you are measuring and why, no analysis can be trusted.", apps:"Research design, survey construction, scientific methodology, data quality assessment.", connects:["Data","Variables","Sampling","Measurement","Data Collection"] },
+  "Data": { tag:"Foundations", what:"The raw material of statistics. Data is any recorded observation — numbers, text, images, or signals — that can be analyzed.", why:"Data quality determines the quality of all conclusions. Bad data leads to wrong answers regardless of how sophisticated the analysis.", apps:"Database design, data engineering, data curation, scientific recording.", connects:["Variables","Measurement","Descriptive Statistics"] },
+  "Variables": { tag:"Foundations", what:"The things being measured. Variables can be numerical (height, income), categorical (blood type, country), or ordinal (rankings), and the type determines which analyses are appropriate.", why:"Choosing the right statistical method depends entirely on what kind of variable you have.", apps:"Survey design, experimental design, database schema.", connects:["Data","Measurement","Descriptive Statistics"] },
+  "Sampling": { tag:"Foundations", what:"The art and science of selecting a subset of a population to study, in a way that allows valid generalization back to the whole.", why:"It is almost never possible to study an entire population. Sampling makes statistical inference possible.", apps:"Opinion polls, clinical trials, quality inspection, market research.", connects:["Inferential Statistics","Survey Methodology","Experimental Design"] },
+  "Measurement": { tag:"Foundations", what:"The process of assigning numbers or labels to observations according to defined rules. Measurement theory studies what can and cannot be meaningfully measured.", why:"Invalid measurement makes all downstream analysis meaningless.", apps:"Psychometrics, educational testing, physical sciences, health outcomes.", connects:["Variables","Psychometrics","Data"] },
+  "Data Collection": { tag:"Foundations", what:"The methods and processes by which observations are gathered — experiments, surveys, administrative records, sensors, and more.", why:"How data is collected determines what questions it can answer and what biases it might contain.", apps:"Clinical data collection, census taking, web analytics, sensor networks.", connects:["Sampling","Experimental Design","Survey Methodology"] },
+  "Descriptive Statistics": { tag:"Classical", what:"The branch concerned with summarizing and describing data you already have. It does not generalize beyond the data — it simply tells you what is there.", why:"Before any analysis can happen, you need to understand the shape, center, and spread of your data.", apps:"Data exploration, business dashboards, sports statistics, government reports.", connects:["Central Tendency","Dispersion","Visualization","Inferential Statistics"] },
+  "Central Tendency": { tag:"Classical", what:"Measures of what is 'typical' — the mean, median, and mode. They answer: where is the center of this data?", why:"The first question about any dataset is 'what is the typical value?' These measures answer it.", apps:"Average income, median house price, most common disease outcome.", connects:["Descriptive Statistics","Dispersion","Inferential Statistics"] },
+  "Dispersion": { tag:"Classical", what:"Measures of how spread out data is — range, variance, standard deviation, and interquartile range.", why:"Knowing the average without knowing the spread is misleading. Two groups can have identical means but wildly different spreads.", apps:"Risk assessment, quality control, comparing volatility of investments.", connects:["Descriptive Statistics","Central Tendency","Probability"] },
+  "Shape": { tag:"Classical", what:"The form of a distribution — whether it is symmetric, skewed, bell-shaped, or has heavy tails. Describes how data is distributed visually and mathematically.", why:"Shape determines which statistical tests are appropriate and what assumptions can be made.", apps:"Financial returns analysis, biological measurement distributions, quality engineering.", connects:["Descriptive Statistics","Probability","Visualization"] },
+  "Visualization": { tag:"Classical", what:"The graphical representation of data through charts, plots, histograms, and dashboards. Turns numbers into pictures the human brain can interpret.", why:"Humans perceive patterns visually far better than through tables of numbers. Visualization is how analysis is communicated.", apps:"Business intelligence, scientific reporting, journalism, public health communication.", connects:["Descriptive Statistics","Exploratory Analysis","Data Science"] },
+  "Exploratory Analysis": { tag:"Classical", what:"The open-ended process of investigating data without a predetermined hypothesis — looking for patterns, anomalies, and unexpected structure.", why:"Pioneered by John Tukey, EDA prevents researchers from missing what is actually in their data by forcing open curiosity before confirmatory testing.", apps:"Data science workflows, genomics, social media analysis, fraud detection.", connects:["Descriptive Statistics","Visualization","Statistical Learning"] },
+  "Probability": { tag:"Classical", what:"The mathematical language of uncertainty. Probability theory describes how likely events are, how random variables behave, and how chance structures the world.", why:"All of statistical inference is built on probability. Without it, there is no principled way to talk about what data means.", apps:"Insurance pricing, gambling, quantum mechanics, epidemiology, AI.", connects:["Events","Distributions","Inferential Statistics","Bayesian Statistics","Stochastic Processes"] },
+  "Events": { tag:"Classical", what:"The basic objects of probability: outcomes or collections of outcomes of a random experiment. The probability of an event is a number between 0 and 1.", why:"Understanding events and their probabilities is the starting point for all probabilistic reasoning.", apps:"Risk analysis, reliability engineering, game theory.", connects:["Probability","Conditional Probability","Decision Theory"] },
+  "Conditional Probability": { tag:"Classical", what:"The probability of one event given that another event is known to have occurred. It captures how new information updates what we expect.", why:"Most real decisions involve conditional reasoning — what do I expect given what I know? This is the heart of Bayesian thinking.", apps:"Medical diagnosis, spam filtering, recommendation systems.", connects:["Probability","Bayesian Statistics","Decision Theory"] },
+  "Random Variables": { tag:"Classical", what:"A variable whose value is determined by chance. The bridge between the abstract world of probability and the concrete numbers we observe.", why:"Statistical models describe data as realizations of random variables. This formalism makes analysis rigorous.", apps:"Modeling stock prices, rainfall, test scores, error terms in regression.", connects:["Probability","Distributions","Inferential Statistics"] },
+  "Distributions": { tag:"Classical", what:"Mathematical descriptions of all the possible values a random variable can take and how probable each is. The normal, binomial, Poisson distributions and hundreds more.", why:"Distributions are the models of statistics. Choosing the right distribution for your data is often the central challenge.", apps:"Modeling heights, counts, waiting times, proportions across all scientific fields.", connects:["Random Variables","Probability","Inferential Statistics","Bayesian Statistics"] },
+  "Stochastic Processes": { tag:"Classical", what:"Collections of random variables indexed by time or space. They model systems that evolve randomly — stock prices, epidemics, weather, queues.", why:"Many real phenomena are not static. Stochastic processes give the language to model systems that change randomly over time.", apps:"Financial modeling, epidemic spread, queuing theory, genetics, particle physics.", connects:["Probability","Time Series Analysis","Survival Analysis"] },
+  "Decision Theory": { tag:"Classical", what:"The framework for making optimal choices under uncertainty. Combines probability with values (utilities) to derive the best action.", why:"Statistics without action is incomplete. Decision theory connects analysis to the choices it should inform.", apps:"Medical treatment choices, business strategy, policy design, game AI.", connects:["Probability","Bayesian Statistics","Economics"] },
+  "Inferential Statistics": { tag:"Classical", what:"The branch that generalizes from a sample to a population. It uses probability to quantify how confident we can be in conclusions drawn from limited data.", why:"Most scientific knowledge comes from inference. Without it, we could never generalize beyond what we have directly observed.", apps:"Clinical trials, political polling, quality assurance, scientific research.", connects:["Estimation","Hypothesis Testing","Probability","Regression","Experimental Design"] },
+  "Estimation": { tag:"Classical", what:"The process of using sample data to estimate unknown population quantities. The two main types are point estimates (single best guess) and interval estimates (range of plausible values).", why:"We almost never know the true values of population parameters. Estimation gives our best guesses along with a measure of their uncertainty.", apps:"Estimating average income, prevalence of disease, effectiveness of treatments.", connects:["Point Estimation","Interval Estimation","Bayesian Statistics"] },
+  "Point Estimation": { tag:"Classical", what:"Producing a single number as the best estimate of an unknown quantity. The sample mean as an estimate of the population mean is the simplest example.", why:"Decision-makers often need a single number to work with, even knowing it is uncertain.", apps:"Best-estimate unemployment rate, average product lifetime, predicted sales.", connects:["Estimation","Maximum Likelihood","Bayesian Statistics"] },
+  "Interval Estimation": { tag:"Classical", what:"Producing a range of plausible values for an unknown quantity — the famous 'confidence interval'. It quantifies the precision of an estimate.", why:"A single number without a range of uncertainty is often misleading. Confidence intervals communicate how much we should trust an estimate.", apps:"Medical studies ('the drug reduced risk by 30%, 95% CI: 15%–45%'), engineering tolerances.", connects:["Estimation","Hypothesis Testing","Bayesian Statistics"] },
+  "Hypothesis Testing": { tag:"Classical", what:"A formal procedure for deciding whether data is consistent with a specific claim (the null hypothesis). Produces p-values and statistical significance decisions.", why:"It provides a disciplined framework for deciding when evidence is strong enough to overturn a default assumption.", apps:"Drug trials, A/B testing in tech, quality control, psychological research.", connects:["Inferential Statistics","Estimation","Experimental Design","p-values"] },
+  "Experimental Design": { tag:"Classical", what:"The science of planning experiments to answer questions as efficiently and validly as possible. Covers randomization, control groups, blocking, and factorial designs.", why:"A poorly designed experiment cannot answer the question it was meant to address, no matter how sophisticated the analysis.", apps:"Clinical trials, agricultural experiments, industrial R&D, psychology studies.", connects:["Inferential Statistics","Causal Inference","ANOVA"] },
+  "Sampling Theory": { tag:"Classical", what:"The mathematical theory of how to draw samples from populations and what statistical properties the resulting estimates will have.", why:"Not all sampling methods are equally valid. Theory guides how to design samples that support correct inference.", apps:"National surveys, exit polls, acceptance sampling in manufacturing.", connects:["Inferential Statistics","Survey Methodology","Foundations"] },
+  "Regression": { tag:"Classical", what:"The family of methods that model relationships between variables — predicting an outcome from one or more inputs. The workhorse of applied statistics.", why:"Prediction and explanation of relationships between variables is one of the most common tasks in data analysis.", apps:"Predicting house prices, estimating drug effects, forecasting demand, salary modeling.", connects:["Linear Regression","Logistic Regression","GLM","Statistical Modeling","Machine Learning"] },
+  "Linear Regression": { tag:"Classical", what:"The simplest regression: modeling a continuous outcome as a linear function of one or more inputs. The straight line through a scatterplot.", why:"It is interpretable, widely applicable, and forms the foundation for understanding all more complex methods.", apps:"Economics, social sciences, environmental science, engineering.", connects:["Regression","Multiple Regression","Inferential Statistics"] },
+  "Multiple Regression": { tag:"Classical", what:"Linear regression with multiple input variables. Allows estimation of each variable's effect while controlling for all others.", why:"Real phenomena are shaped by many factors simultaneously. Multiple regression disentangles their individual contributions.", apps:"Salary analysis controlling for experience and education, risk factors in medicine.", connects:["Linear Regression","Multivariate Statistics","Variable Selection"] },
+  "Logistic Regression": { tag:"Classical", what:"Regression for binary outcomes (yes/no, success/failure). Models the probability that an observation belongs to a category.", why:"Many of the most important outcomes in science and business are binary: did the patient survive? Did the customer buy?", apps:"Credit scoring, disease diagnosis, spam detection, loan default prediction.", connects:["Regression","GLM","Statistical Learning","Classification"] },
+  "Nonlinear Regression": { tag:"Classical", what:"Regression where the relationship between input and output follows a curved, non-straight pattern that cannot be captured by a line.", why:"Many real processes are inherently nonlinear — growth curves, pharmacokinetics, physical laws.", apps:"Biochemistry, pharmacology, physics, chemical engineering.", connects:["Regression","Statistical Modeling","Computational Statistics"] },
+  "GLM": { tag:"Classical", what:"Generalized Linear Models unify linear regression, logistic regression, Poisson regression, and more into a single framework for modeling many types of outcomes.", why:"A single powerful framework is more elegant and productive than dozens of separate techniques.", apps:"Insurance claim modeling, count data in ecology, binary outcomes in medicine.", connects:["Regression","Logistic Regression","Statistical Modeling","Nonparametric Statistics"] },
+  "Statistical Modeling": { tag:"Classical", what:"The broader practice of constructing mathematical representations of real-world processes — capturing the structure of data and the relationships between quantities.", why:"Models are simplified versions of reality that let us understand, predict, and communicate about complex systems.", apps:"Epidemiology, engineering, climate science, social science, finance.", connects:["Regression","Bayesian Statistics","Multivariate Statistics","Computational Statistics"] },
+  "Multivariate Statistics": { tag:"Classical", what:"Methods for analyzing data with many variables simultaneously. Instead of studying variables one at a time, it treats data as living in a high-dimensional space.", why:"Real phenomena are multidimensional. Multivariate methods reveal structure that cannot be seen by looking at variables individually.", apps:"Market segmentation, neuroimaging, social science, chemometrics, genetics.", connects:["Principal Components","Factor Analysis","Clustering","Regression","High-Dimensional Statistics"] },
+  "Principal Components": { tag:"Classical", what:"A technique that finds the directions of greatest variation in multivariate data — compressing many variables into fewer, more informative ones.", why:"When you have hundreds of correlated variables, PCA finds the essential structure and reduces complexity.", apps:"Face recognition, genomics, image compression, financial portfolio analysis.", connects:["Multivariate Statistics","Factor Analysis","High-Dimensional Statistics","Statistical Learning"] },
+  "Factor Analysis": { tag:"Classical", what:"Discovers latent (hidden) factors that explain the correlations among many observed variables.", why:"Psychological traits, economic forces, and many other quantities cannot be directly measured but can be inferred from observable proxies.", apps:"Psychometrics, marketing research, social science, IQ testing.", connects:["Multivariate Statistics","Psychometrics","Principal Components"] },
+  "Clustering": { tag:"Classical", what:"Methods that group observations into clusters based on similarity — finding natural groupings in data without predefined categories.", why:"Many real datasets contain hidden structure — natural groups that reveal meaningful patterns when discovered.", apps:"Customer segmentation, gene expression analysis, document grouping, image recognition.", connects:["Multivariate Statistics","Statistical Learning","Unsupervised Learning","K-means"] },
+  "Time Series Analysis": { tag:"Classical", what:"Methods for data collected sequentially over time. Focuses on trend, seasonality, autocorrelation, and forecasting.", why:"Many of the most important phenomena — economies, climate, health, prices — unfold over time and require specialized methods.", apps:"Economic forecasting, weather prediction, stock price modeling, equipment monitoring.", connects:["ARIMA","Forecasting","Stochastic Processes","Bayesian Statistics","State Space Models"] },
+  "ARIMA": { tag:"Classical", what:"AutoRegressive Integrated Moving Average — a powerful class of models that capture trend, autocorrelation, and moving average patterns in time series.", why:"The standard workhorse for univariate time series forecasting for decades.", apps:"Economic forecasting, sales prediction, environmental monitoring.", connects:["Time Series Analysis","Forecasting","State Space Models"] },
+  "Forecasting": { tag:"Classical", what:"Using models of the past to predict future values. Encompasses simple extrapolation to complex ML models.", why:"Planning and decision-making depend on knowing what is likely to happen next.", apps:"Business planning, energy demand, climate projections, financial markets.", connects:["Time Series Analysis","ARIMA","Regression","Machine Learning"] },
+  "State Space Models": { tag:"Classical", what:"A flexible framework for time series that separates observed data from underlying hidden states evolving over time.", why:"Many real systems have unobserved components (like latent economic forces) that these models can track.", apps:"Engineering control systems, macroeconomic modeling, GPS tracking, neuroscience.", connects:["Time Series Analysis","ARIMA","Bayesian Statistics","Kalman Filter"] },
+  "Bayesian Statistics": { tag:"Classical", what:"A complete alternative to classical statistics, where probability represents degree of belief. Prior knowledge is combined with data to produce updated beliefs (posterior distributions).", why:"It provides a coherent framework for updating beliefs with evidence, handling small samples gracefully, and incorporating domain knowledge.", apps:"Medical diagnosis, spam filters, scientific meta-analysis, AI systems, hierarchical modeling.", connects:["Probability","Conditional Probability","MCMC","Hierarchical Models","Decision Theory","Causal Inference"] },
+  "MCMC": { tag:"Classical", what:"Markov Chain Monte Carlo — computational methods for sampling from complex probability distributions that cannot be computed directly.", why:"Bayesian inference often requires integrations over high-dimensional spaces that are analytically impossible. MCMC makes them computationally feasible.", apps:"Bayesian model fitting, statistical physics, computational biology.", connects:["Bayesian Statistics","Computational Statistics"] },
+  "Hierarchical Models": { tag:"Classical", what:"Models with multiple levels of variability — data nested within groups, groups nested within populations. Also called multilevel models.", why:"Many real datasets have natural hierarchical structure (students within schools, patients within hospitals) that must be accounted for.", apps:"Educational research, clinical multi-center trials, ecological modeling.", connects:["Bayesian Statistics","Statistical Modeling","Regression"] },
+  "Nonparametric Statistics": { tag:"Classical", what:"Methods that do not assume a specific distribution for the data. They let the data 'speak for itself' rather than fitting it to a predetermined model.", why:"The assumptions of classical parametric methods are often violated. Nonparametric methods provide valid alternatives when assumptions fail.", apps:"Ordinal data analysis, small samples, distribution-free hypothesis tests, rank-based methods.", connects:["Hypothesis Testing","Regression","Robust Statistics","Statistical Learning"] },
+  "Robust Statistics": { tag:"Classical", what:"Methods that work well even when data contains outliers or deviates from assumptions. They are not easily 'broken' by unusual observations.", why:"Real data contains errors, outliers, and deviations. Robust methods give reliable results even when data is messy.", apps:"Financial data analysis, environmental monitoring, any domain with measurement error.", connects:["Nonparametric Statistics","Descriptive Statistics","Estimation"] },
+  "Survival Analysis": { tag:"Applied", what:"Methods for analyzing time-to-event data — how long until something happens: death, failure, default, recovery.", why:"Many important outcomes are events that occur at some point in time. Standard regression methods cannot handle the complexity this creates.", apps:"Medical trials, engineering reliability, customer churn, credit default modeling.", connects:["Kaplan-Meier","Cox Regression","Reliability Theory","Bayesian Statistics"] },
+  "Kaplan-Meier": { tag:"Applied", what:"A nonparametric estimator of the survival function — showing the probability of surviving past each time point.", why:"It handles censored data (where some patients have not yet experienced the event) in a valid, intuitive way.", apps:"Cancer survival curves, reliability engineering, A/B testing for time-to-action.", connects:["Survival Analysis","Nonparametric Statistics"] },
+  "Cox Regression": { tag:"Applied", what:"A regression model for survival data that estimates the effect of multiple variables on survival time without assuming a specific distribution.", why:"Allows comparison of survival between groups while adjusting for other variables.", apps:"Clinical trials, epidemiology, reliability engineering.", connects:["Survival Analysis","Regression"] },
+  "Spatial Statistics": { tag:"Applied", what:"Methods for data where observations are associated with geographic locations, accounting for the fact that nearby things tend to be more similar.", why:"Ignoring spatial structure leads to incorrect inference. Everything from soil quality to disease rates varies across space in structured ways.", apps:"Epidemiology, ecology, remote sensing, real estate, meteorology, geology.", connects:["Geostatistics","Kriging","Time Series Analysis","Bayesian Statistics"] },
+  "Geostatistics": { tag:"Applied", what:"A branch of spatial statistics focused on modeling spatially correlated data using variograms and kriging.", why:"Mining, environmental science, and hydrology need to predict values at unobserved locations from sparse measurements.", apps:"Mining exploration, soil contamination, groundwater modeling.", connects:["Spatial Statistics","Kriging"] },
+  "Kriging": { tag:"Applied", what:"An interpolation method that predicts values at unmeasured locations using the spatial correlation structure of measured data.", why:"Optimal prediction at unsampled points is essential in many earth sciences and environmental applications.", apps:"Oil exploration, environmental monitoring, weather interpolation.", connects:["Geostatistics","Spatial Statistics"] },
+  "Functional Data Analysis": { tag:"Modern", what:"Methods for data that are entire functions or curves — like a person's temperature over a day, or a brain's electrical activity over time.", why:"Much modern data is not a single number but an entire profile or trajectory. FDA treats such data as single mathematical objects.", apps:"Neuroscience, climate science, biomechanics, speech recognition.", connects:["Multivariate Statistics","Time Series Analysis","High-Dimensional Statistics"] },
+  "High-Dimensional Statistics": { tag:"Modern", what:"Methods for the 'wide data' problem where the number of variables exceeds the number of observations. Classical methods fail; sparse estimation and regularization are key.", why:"Genomics, text analysis, and sensor networks routinely produce datasets with more variables than observations.", apps:"Genomics, neuroimaging, text mining, financial risk modeling.", connects:["Lasso","Ridge Regression","Principal Components","Multivariate Statistics","Statistical Learning"] },
+  "Lasso": { tag:"Modern", what:"Least Absolute Shrinkage and Selection Operator — a regression method that automatically selects important variables by shrinking others to exactly zero.", why:"When you have thousands of variables, you need a method that identifies which ones matter.", apps:"Genomics, finance, text analysis, any high-dimensional prediction problem.", connects:["High-Dimensional Statistics","Ridge Regression","Regression"] },
+  "Ridge Regression": { tag:"Modern", what:"Regression with a penalty that shrinks all coefficient estimates toward zero, preventing overfitting in the presence of many correlated variables.", why:"Improves stability of regression estimates when predictors are correlated or numerous.", apps:"Chemometrics, genomics, signal processing.", connects:["High-Dimensional Statistics","Lasso","Regression"] },
+  "Computational Statistics": { tag:"Modern", what:"The interface between statistics and computing — methods that depend on computational power: simulation, bootstrap, cross-validation, EM algorithm.", why:"Many statistical methods that are theoretically elegant would be computationally infeasible without modern computers.", apps:"Bootstrap confidence intervals, simulation-based inference, machine learning model evaluation.", connects:["Bootstrap","MCMC","Statistical Learning","Bayesian Statistics"] },
+  "Bootstrap": { tag:"Modern", what:"A resampling method that estimates the distribution of a statistic by repeatedly resampling the data with replacement.", why:"It provides confidence intervals and standard errors for almost any statistic without requiring mathematical formulas.", apps:"Any situation where classical confidence interval formulas are unavailable or assumptions are violated.", connects:["Computational Statistics","Nonparametric Statistics","Estimation"] },
+  "Statistical Learning": { tag:"Modern", what:"The statistical foundation of machine learning — methods that learn patterns from data to make predictions or find structure, with rigorous treatment of uncertainty and overfitting.", why:"Prediction from data is one of the most practically important tasks in modern science and industry. Statistical learning provides the rigorous framework.", apps:"Image recognition, natural language processing, fraud detection, drug discovery, recommendation systems.", connects:["Supervised Learning","Unsupervised Learning","Reinforcement Learning","Deep Learning","Regression","Classification"] },
+  "Supervised Learning": { tag:"Modern", what:"Learning from labeled examples — each observation has an outcome, and the algorithm learns to predict it. Encompasses regression and classification.", why:"Most useful prediction tasks involve learning from past data where answers are known.", apps:"Spam detection, medical diagnosis, credit scoring, image classification.", connects:["Statistical Learning","Classification","Regression","Deep Learning"] },
+  "Unsupervised Learning": { tag:"Modern", what:"Finding structure in data without labels. The algorithm discovers patterns, groupings, or reduced representations on its own.", why:"Much of the world's data is unlabeled. Unsupervised methods find hidden structure without requiring expensive labeling.", apps:"Customer segmentation, topic modeling, anomaly detection, data compression.", connects:["Statistical Learning","Clustering","Principal Components","Generative Models"] },
+  "Reinforcement Learning": { tag:"Modern", what:"Learning by trial and error — an agent takes actions, receives rewards or penalties, and learns to maximize cumulative reward.", why:"Some tasks cannot be learned from static data; they require active interaction with an environment.", apps:"Game-playing AI, robotics, recommendation systems, autonomous vehicles.", connects:["Statistical Learning","Decision Theory","Deep Learning"] },
+  "Deep Learning": { tag:"Modern", what:"Statistical learning using neural networks with many layers. Learns hierarchical representations of data automatically.", why:"Has achieved breakthrough performance on image, speech, and language tasks that were previously intractable.", apps:"Large language models, image generation, medical imaging, speech recognition.", connects:["Statistical Learning","Supervised Learning","AI","Neural Networks"] },
+  "Biostatistics": { tag:"Applied", what:"Statistics applied to biological and medical data. Covers clinical trials, epidemiology, genomics, and public health.", why:"Decisions about drugs, treatments, and public health policies must be based on rigorous statistical evidence.", apps:"Drug approval, disease surveillance, clinical practice guidelines, health policy.", connects:["Survival Analysis","Experimental Design","Causal Inference","Genomics","Meta Analysis"] },
+  "Econometrics": { tag:"Applied", what:"Statistics applied to economic data — specialized methods for observational data, panel data, instrumental variables, and causal policy analysis.", why:"Economic data is almost never from controlled experiments. Econometrics provides tools for drawing causal conclusions from observational economic data.", apps:"Policy evaluation, labor economics, macroeconomic forecasting, financial modeling.", connects:["Regression","Causal Inference","Time Series Analysis","Panel Data"] },
+  "Psychometrics": { tag:"Applied", what:"The science of measuring psychological constructs — intelligence, personality, attitudes — that cannot be directly observed.", why:"Human traits cannot be measured with a ruler. Psychometrics provides the theory and methods for constructing and validating such measures.", apps:"IQ tests, personality inventories, educational assessments, clinical psychology.", connects:["Factor Analysis","Measurement","Survey Methodology","Multivariate Statistics"] },
+  "Environmental Statistics": { tag:"Applied", what:"Statistical methods for environmental data — climate, ecology, pollution — which often involve spatial, temporal, and complex multivariate structure.", why:"Understanding climate change, biodiversity loss, and pollution requires rigorous statistical methods for complex environmental data.", apps:"Climate change detection, species distribution modeling, pollution monitoring, ecological forecasting.", connects:["Spatial Statistics","Time Series Analysis","Bayesian Statistics","Geostatistics"] },
+  "Industrial Statistics": { tag:"Applied", what:"Statistical methods applied to manufacturing and engineering: process control, reliability, quality improvement, and design of experiments.", why:"Improving product quality and manufacturing efficiency requires rigorous data-driven methods.", apps:"Six Sigma, semiconductor manufacturing, pharmaceutical production, automotive quality.", connects:["Quality Control","Reliability Theory","Experimental Design","Robust Statistics"] },
+  "Agricultural Statistics": { tag:"Applied", what:"Statistical design and analysis for agricultural research — crop experiments, soil analysis, climate-yield modeling, and food security.", why:"Feeding a growing world requires statistically rigorous methods for improving yields and understanding agricultural systems.", apps:"Crop variety trials, precision agriculture, food supply modeling.", connects:["Experimental Design","Spatial Statistics","Bayesian Statistics"] },
+  "Official Statistics": { tag:"Applied", what:"Statistics produced by governments and international organizations — GDP, unemployment, population, inflation — using standardized methodologies.", why:"Economic and social policy depends on reliable national statistics. Methodological rigor and transparency are essential.", apps:"National accounts, census, price indices, labor force surveys.", connects:["Survey Methodology","Sampling Theory","Econometrics"] },
+  "Quality Control": { tag:"Applied", what:"Statistical methods for monitoring and improving the quality of products and processes — control charts, acceptance sampling, capability analysis.", why:"Defects cost money and can harm people. Statistical monitoring catches problems early and guides improvement.", apps:"Manufacturing, healthcare process improvement, software testing.", connects:["Industrial Statistics","Reliability Theory","Experimental Design"] },
+  "Causal Inference": { tag:"Modern", what:"Methods for estimating the causal effect of one variable on another from observational data — going beyond correlation to establish what actually causes what.", why:"Decisions require knowing causation, not just correlation. Does the drug cure the disease? Does the policy reduce crime?", apps:"Policy evaluation, medicine, economics, public health, AI fairness.", connects:["Econometrics","Experimental Design","Bayesian Statistics","Biostatistics","DAGs"] },
+  "DAGs": { tag:"Modern", what:"Directed Acyclic Graphs — visual diagrams that represent causal assumptions, showing which variables cause which others.", why:"Making causal assumptions explicit and visual is the foundation of rigorous causal reasoning.", apps:"Epidemiology, economics, AI research, social science.", connects:["Causal Inference","Bayesian Statistics"] },
+  "Meta Analysis": { tag:"Applied", what:"Statistical methods for combining the results of multiple studies into a single, more powerful conclusion.", why:"No single study is definitive. Meta-analysis systematically pools evidence across studies to reach more reliable conclusions.", apps:"Medical evidence synthesis, psychology replication research, policy analysis.", connects:["Biostatistics","Bayesian Statistics","Inferential Statistics"] },
+  "Reliability Theory": { tag:"Applied", what:"The study of the probability that a system, component, or process will function correctly for a specified period.", why:"Engineering and product design depend on predicting when things will fail.", apps:"Aerospace engineering, electronics, nuclear safety, medical devices.", connects:["Industrial Statistics","Survival Analysis","Quality Control"] },
+  "Survey Methodology": { tag:"Applied", what:"The science of designing, conducting, and analyzing surveys — including questionnaire design, sampling, nonresponse, and weighting.", why:"Surveys are one of the main ways humans learn about populations at scale. Their validity depends on rigorous methodology.", apps:"Political polling, market research, social surveys, public health monitoring.", connects:["Sampling Theory","Psychometrics","Official Statistics"] },
+  "Data Science": { tag:"Modern", what:"An interdisciplinary field combining statistics, computing, and domain knowledge to extract insights from data. It extends statistics with engineering and software skills.", why:"Modern data is large, messy, and valuable. Data science provides the workflow and tools to turn raw data into knowledge.", apps:"Tech companies, healthcare analytics, retail, finance, government.", connects:["Statistical Learning","Statistical Modeling","Visualization","Machine Learning","AI"] },
+  "AI": { tag:"Modern", what:"Artificial Intelligence — building systems that perform tasks requiring human-like intelligence. Statistical learning is its central engine.", why:"AI depends on learning from data. Without statistical foundations, AI systems would have no principled way to generalize from training examples.", apps:"Autonomous vehicles, medical diagnosis, natural language processing, game playing, content generation.", connects:["Deep Learning","Statistical Learning","Reinforcement Learning","Explainable AI"] },
+  "Explainable AI": { tag:"Modern", what:"Methods for making AI and machine learning models interpretable — understanding why they make the predictions they make.", why:"High-stakes decisions in medicine, justice, and finance require that AI decisions be understandable and auditable.", apps:"Medical AI, credit decisions, criminal justice algorithms, regulatory compliance.", connects:["AI","Statistical Learning","Causal Inference"] },
+  "Neutrosophic Statistics": { tag:"Modern", what:"An extension of classical statistics that handles indeterminate, ambiguous, or incomplete data — where observations themselves carry uncertainty.", why:"Real data is often unclear, contradictory, or only partially known. Neutrosophic methods extend the reach of statistics to more realistic conditions.", apps:"Intelligence analysis, complex social systems, emerging research frontiers.", connects:["Nonparametric Statistics","Bayesian Statistics","Fuzzy Methods"] },
+  "Modern Research Frontiers": { tag:"Modern", what:"The active edge of statistical research: topological data analysis, quantum statistics, privacy-preserving methods, network statistics, and more.", why:"New data types, new computational tools, and new societal challenges continuously expand what statistics must be able to do.", apps:"Genomics, neuroscience, social network analysis, quantum computing, federated learning.", connects:["High-Dimensional Statistics","Causal Inference","Functional Data Analysis","Statistical Learning","Explainable AI"] }
+};
+
+// ============================================================
+// STAR FIELD
+// ============================================================
+(function(){
+  const s = document.getElementById('stars');
+  for(let i=0;i<180;i++){
+    const d = document.createElement('div');
+    d.className='star';
+    const sz = Math.random()*2+0.5;
+    d.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.2+Math.random()*0.6};animation-delay:${Math.random()*5}s`;
+    s.appendChild(d);
+  }
+})();
+
+// ============================================================
+// THEME
+// ============================================================
+const themeBtn = document.getElementById('theme-toggle');
+themeBtn.addEventListener('click',()=>{
+  const h=document.documentElement;
+  const t=h.dataset.theme==='dark'?'light':'dark';
+  h.dataset.theme=t;
+  themeBtn.textContent=t==='dark'?'🌙':'☀️';
+  renderTree();
+});
+
+// ============================================================
+// BACK TO TOP
+// ============================================================
+const bt=document.getElementById('back-top');
+window.addEventListener('scroll',()=>{ bt.classList.toggle('visible',window.scrollY>400); });
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(name){
+  const d=nodeData[name];
+  if(!d) return;
+  document.getElementById('modal-tag').textContent=d.tag;
+  document.getElementById('modal-title').textContent=name;
+  document.getElementById('modal-what').textContent=d.what;
+  document.getElementById('modal-why').textContent=d.why;
+  document.getElementById('modal-apps').textContent=d.apps;
+  const ct=document.getElementById('modal-connects');
+  ct.innerHTML='';
+  (d.connects||[]).forEach(c=>{
+    const s=document.createElement('span');
+    s.className='modal-tag-item'; s.textContent=c;
+    ct.appendChild(s);
+  });
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('modal-overlay')){
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
+
+// ============================================================
+// TREE DATA
+// ============================================================
+const treeData = {
+  name:"Statistics", category:"root",
+  children:[
+    { name:"Foundations", category:"foundations", children:[
+      {name:"Data",category:"foundations"},{name:"Variables",category:"foundations"},
+      {name:"Sampling",category:"foundations"},{name:"Measurement",category:"foundations"},
+      {name:"Data Collection",category:"foundations"}
+    ]},
+    { name:"Descriptive Statistics", category:"classical", children:[
+      {name:"Central Tendency",category:"classical"},{name:"Dispersion",category:"classical"},
+      {name:"Shape",category:"classical"},{name:"Visualization",category:"classical"},
+      {name:"Exploratory Analysis",category:"classical"}
+    ]},
+    { name:"Probability", category:"classical", children:[
+      {name:"Events",category:"classical"},{name:"Conditional Probability",category:"classical"},
+      {name:"Random Variables",category:"classical"},{name:"Distributions",category:"classical"},
+      {name:"Stochastic Processes",category:"classical"},{name:"Decision Theory",category:"classical"}
+    ]},
+    { name:"Inferential Statistics", category:"classical", children:[
+      { name:"Estimation", category:"classical", children:[
+        {name:"Point Estimation",category:"classical"},{name:"Interval Estimation",category:"classical"}
+      ]},
+      {name:"Hypothesis Testing",category:"classical"},
+      {name:"Experimental Design",category:"classical"},
+      {name:"Sampling Theory",category:"classical"}
+    ]},
+    { name:"Regression", category:"classical", children:[
+      {name:"Linear Regression",category:"classical"},{name:"Multiple Regression",category:"classical"},
+      {name:"Logistic Regression",category:"classical"},{name:"Nonlinear Regression",category:"classical"},
+      {name:"GLM",category:"classical"}
+    ]},
+    { name:"Statistical Modeling", category:"classical"},
+    { name:"Multivariate Statistics", category:"classical", children:[
+      {name:"Principal Components",category:"classical"},{name:"Factor Analysis",category:"classical"},
+      {name:"Clustering",category:"classical"}
+    ]},
+    { name:"Time Series Analysis", category:"classical", children:[
+      {name:"ARIMA",category:"classical"},{name:"Forecasting",category:"classical"},
+      {name:"State Space Models",category:"classical"}
+    ]},
+    { name:"Bayesian Statistics", category:"classical", children:[
+      {name:"MCMC",category:"classical"},{name:"Hierarchical Models",category:"classical"}
+    ]},
+    { name:"Nonparametric Statistics", category:"classical"},
+    { name:"Robust Statistics", category:"classical"},
+    { name:"Survival Analysis", category:"applied", children:[
+      {name:"Kaplan-Meier",category:"applied"},{name:"Cox Regression",category:"applied"}
+    ]},
+    { name:"Spatial Statistics", category:"applied", children:[
+      {name:"Geostatistics",category:"applied"},{name:"Kriging",category:"applied"}
+    ]},
+    { name:"Functional Data Analysis", category:"modern"},
+    { name:"High-Dimensional Statistics", category:"modern", children:[
+      {name:"Lasso",category:"modern"},{name:"Ridge Regression",category:"modern"}
+    ]},
+    { name:"Computational Statistics", category:"modern", children:[
+      {name:"Bootstrap",category:"modern"},{name:"MCMC",category:"modern"}
+    ]},
+    { name:"Statistical Learning", category:"modern", children:[
+      {name:"Supervised Learning",category:"modern"},{name:"Unsupervised Learning",category:"modern"},
+      {name:"Reinforcement Learning",category:"modern"},{name:"Deep Learning",category:"modern"}
+    ]},
+    { name:"Biostatistics", category:"applied"},
+    { name:"Econometrics", category:"applied"},
+    { name:"Psychometrics", category:"applied"},
+    { name:"Environmental Statistics", category:"applied"},
+    { name:"Industrial Statistics", category:"applied"},
+    { name:"Agricultural Statistics", category:"applied"},
+    { name:"Official Statistics", category:"applied"},
+    { name:"Quality Control", category:"applied"},
+    { name:"Causal Inference", category:"modern", children:[
+      {name:"DAGs",category:"modern"}
+    ]},
+    { name:"Meta Analysis", category:"applied"},
+    { name:"Reliability Theory", category:"applied"},
+    { name:"Survey Methodology", category:"applied"},
+    { name:"Emerging Areas", category:"modern", children:[
+      {name:"Data Science",category:"modern"},{name:"AI",category:"modern"},
+      {name:"Explainable AI",category:"modern"},{name:"Neutrosophic Statistics",category:"modern"},
+      {name:"Modern Research Frontiers",category:"modern"}
+    ]}
+  ]
+};
+
+// ============================================================
+// TREE RENDERING (custom SVG)
+// ============================================================
+const colors = {
+  root:    "#7c5cbf",
+  foundations: "#4fc3f7",
+  classical:   "#81c784",
+  applied:     "#ffb74d",
+  modern:      "#f06292"
+};
+const catLabels={root:"Root",foundations:"Foundations",classical:"Classical",applied:"Applied",modern:"Modern"};
+
+let flatNodes=[], flatLinks=[], expandedSet=new Set(['Statistics']);
+let activeFilter='all';
+let searchTerm='';
+
+function buildFlat(node, parent, depth){
+  const id = node.name;
+  flatNodes.push({id, name:node.name, category:node.category, depth, parent: parent?parent.name:null, children:(node.children||[]).map(c=>c.name)});
+  if(node.children) node.children.forEach(c=>{ flatLinks.push({src:id,dst:c.name}); buildFlat(c,node,depth+1); });
+}
+buildFlat(treeData, null, 0);
+
+function isVisible(n){
+  if(activeFilter!=='all' && n.category!=='root' && n.category!==activeFilter) return false;
+  if(searchTerm && !n.name.toLowerCase().includes(searchTerm)) return false;
+  if(n.depth===0) return true;
+  // check all ancestors expanded
+  let cur=n;
+  while(cur.parent){
+    if(!expandedSet.has(cur.parent)) return false;
+    cur=flatNodes.find(x=>x.name===cur.parent)||{parent:null};
+  }
+  return true;
+}
+
+function getNodeW(name){ return Math.max(name.length*7.5+24, 90); }
+const NODE_H=28, V_GAP=44, H_GAP=22;
+
+function renderTree(){
+  const isDark = document.documentElement.dataset.theme==='dark';
+  const textColor = isDark?'#e8e6f0':'#18142e';
+  const bgCol = isDark?'#13131a':'#f0ecff';
+  const borderCol = isDark?'rgba(120,100,220,0.25)':'rgba(100,70,200,0.18)';
+  const linkCol = isDark?'rgba(180,160,255,0.25)':'rgba(100,70,200,0.2)';
+
+  // compute layout: group by depth
+  const visible = flatNodes.filter(n=>isVisible(n));
+  const byDepth={};
+  visible.forEach(n=>{ (byDepth[n.depth]=byDepth[n.depth]||[]).push(n); });
+  const depths=Object.keys(byDepth).map(Number).sort((a,b)=>a-b);
+  const posMap={};
+
+  // x positions by depth column
+  let xCursor=20;
+  const depthX={};
+  depths.forEach(d=>{ depthX[d]=xCursor; const maxW=Math.max(...(byDepth[d]||[]).map(n=>getNodeW(n.name))); xCursor+=maxW+H_GAP; });
+
+  // y positions: within each depth, stack nodes, grouped by parent
+  depths.forEach(d=>{
+    const nodes=byDepth[d]||[];
+    nodes.forEach((n,i)=>{ posMap[n.name]={x:depthX[d], y:24+i*(NODE_H+V_GAP)}; });
+  });
+
+  // SVG size
+  const W=xCursor+20;
+  const maxY=Math.max(...Object.values(posMap).map(p=>p.y))+NODE_H+24;
+
+  const svg=document.getElementById('tree-svg');
+  svg.setAttribute('viewBox',`0 0 ${W} ${maxY}`);
+  svg.setAttribute('width',W); svg.setAttribute('height',maxY);
+  svg.style.background=bgCol;
+
+  let html='';
+  // links
+  flatLinks.forEach(l=>{
+    const s=posMap[l.src], d=posMap[l.dst];
+    if(!s||!d) return;
+    const sx=s.x+getNodeW(l.src), sy=s.y+NODE_H/2;
+    const dx=d.x, dy=d.y+NODE_H/2;
+    const mx=(sx+dx)/2;
+    html+=`<path class="tree-link" d="M${sx},${sy} C${mx},${sy} ${mx},${dy} ${dx},${dy}" stroke="${linkCol}"/>`;
+  });
+  // nodes
+  visible.forEach(n=>{
+    const p=posMap[n.name]; if(!p) return;
+    const w=getNodeW(n.name);
+    const col=colors[n.category]||'#7c5cbf';
+    const hasChildren=n.children&&n.children.length>0;
+    const expanded=expandedSet.has(n.name);
+    const isMatch=searchTerm&&n.name.toLowerCase().includes(searchTerm);
+    const glowFilter=isMatch?`filter="url(#glow)"`:'';
+    html+=`<g class="tree-node" onclick="nodeClick('${n.name.replace(/'/g,"\\'")}')">
+      <rect x="${p.x}" y="${p.y}" width="${w}" height="${NODE_H}" rx="7" fill="${col}18" stroke="${col}" stroke-width="${isMatch?2:1.2}" ${glowFilter}/>
+      <text x="${p.x+10}" y="${p.y+18}" font-size="11.5" fill="${textColor}" font-family="Inter" font-weight="500">${n.name}</text>`;
+    if(hasChildren){
+      const ex=p.x+w-14, ey=p.y+NODE_H/2;
+      html+=`<text x="${ex}" y="${ey+4}" font-size="10" fill="${col}" font-family="Inter" text-anchor="middle">${expanded?'▲':'▼'}</text>`;
+    }
+    html+='</g>';
+  });
+
+  svg.innerHTML=`<defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>`+html;
+}
+
+function nodeClick(name){
+  const n=flatNodes.find(x=>x.name===name);
+  if(n&&n.children&&n.children.length>0){
+    if(expandedSet.has(name)) expandedSet.delete(name);
+    else expandedSet.add(name);
+    renderTree();
+  }
+  openModal(name);
+}
+
+function expandAll(){ flatNodes.forEach(n=>expandedSet.add(n.name)); renderTree(); }
+function collapseAll(){ expandedSet.clear(); expandedSet.add('Statistics'); renderTree(); }
+
+function filterTree(cat){
+  activeFilter=cat;
+  document.querySelectorAll('.tree-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTree();
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+document.getElementById('search-input').addEventListener('input',function(){
+  searchTerm=this.value.toLowerCase().trim();
+  if(searchTerm) expandAll();
+  renderTree();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+expandedSet.add('Statistics');
+renderTree();
+
+// Re-render on resize
+window.addEventListener('resize',()=>{ clearTimeout(window._rt); window._rt=setTimeout(renderTree,200); });
+</script>
+</body>
+</html>
